@@ -103,7 +103,13 @@ public:
 	}
 
 	//展示评估值和选择概率
-
+	void show_eval_sel() {
+		//输出所有评估值和被选择概率
+		for (int i = 0; i < N; i++) {
+			cout << "个体" << i << "的评估值是" << eval[i]
+				<< ",被选择概率是" << prob_select[i] << endl;
+		}
+	}
 
 	//初始化种群，随机产生一些旅行顺序
 	void initPopulation() {
@@ -168,7 +174,7 @@ public:
 		int result = 0;
 		for (int i = 0; i < CITY_NUM; i++)
 			result += sub_vec[i];
-		cout << "当前评估值是: " << 1.0 / (float)result << endl;
+		/*cout << "当前评估值是: " << 1.0 / (float)result << endl;*/
 		return 1.0/(float)result;
 	}
 
@@ -180,24 +186,24 @@ public:
 		}
 		//计算每个个体的适应概率: 个体适应度/总适应度
 		float total = 0.0;
-		for (int i = 0; i < CITY_NUM; i++)
+		for (int i = 0; i < N; i++)
 			total += eval[i];
 
 		//并行地计算每个个体的被选择概率
-		vector<float>total_vec(CITY_NUM, total);
-		vector<float>prob(CITY_NUM, 0.0);
+		vector<float>total_vec(N, total);
+		vector<float>prob(N, 0.0);
 		sycl::buffer eval_buf(this->eval);
 		sycl::buffer total_buf(total_vec);
 		sycl::buffer prob_buf(prob);
 
 		sycl::queue q;
-		for (size_t i = 0; i < CITY_NUM; i++) {
+		for (size_t i = 0; i < N; i++) {
 			q.submit([&](sycl::handler& h) {
 				sycl::accessor eval_acc(eval_buf, h, sycl::read_only);
 				sycl::accessor total_acc(total_buf, h, sycl::read_only);
 				sycl::accessor prob_acc(prob_buf, h, sycl::write_only, sycl::no_init);
 
-				h.parallel_for(CITY_NUM, [=](auto i) {
+				h.parallel_for(N, [=](auto i) {
 					prob_acc[i] = eval_acc[i] / total_acc[i];
 					});
 				});
@@ -210,7 +216,9 @@ int main() {
 	TSP tsp;
 	tsp.showCity();
 	tsp.showPopulation();
-	vector<int>ivec{0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
-	tsp.evaluate(ivec);
+	//vector<int>ivec{0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+	//tsp.evaluate(ivec);
+	tsp.cal_eval_sel();
+	tsp.show_eval_sel();
 
 }
