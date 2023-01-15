@@ -102,6 +102,9 @@ public:
 		}
 	}
 
+	//展示评估值和选择概率
+
+
 	//初始化种群，随机产生一些旅行顺序
 	void initPopulation() {
 		this->population = vector<vector<int>>(N);
@@ -169,7 +172,39 @@ public:
 		return 1.0/(float)result;
 	}
 
+	//计算每个个体的评估值和选择概率,并保存
+	void cal_eval_sel() {
+		//把每个个体的评估值添加到eval中
+		for (int i = 0; i < N; i++) {
+			eval.push_back(evaluate(population[i]));
+		}
+		//计算每个个体的适应概率: 个体适应度/总适应度
+		float total = 0.0;
+		for (int i = 0; i < CITY_NUM; i++)
+			total += eval[i];
 
+		//并行地计算每个个体的被选择概率
+		vector<float>total_vec(CITY_NUM, total);
+		vector<float>prob(CITY_NUM, 0.0);
+		sycl::buffer eval_buf(this->eval);
+		sycl::buffer total_buf(total_vec);
+		sycl::buffer prob_buf(prob);
+
+		sycl::queue q;
+		for (size_t i = 0; i < CITY_NUM; i++) {
+			q.submit([&](sycl::handler& h) {
+				sycl::accessor eval_acc(eval_buf, h, sycl::read_only);
+				sycl::accessor total_acc(total_buf, h, sycl::read_only);
+				sycl::accessor prob_acc(prob_buf, h, sycl::write_only, sycl::no_init);
+
+				h.parallel_for(CITY_NUM, [=](auto i) {
+					prob_acc[i] = eval_acc[i] / total_acc[i];
+					});
+				});
+		}
+		q.wait();
+		this->prob_select = prob;
+	}
 };
 int main() {
 	TSP tsp;
