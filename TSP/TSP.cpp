@@ -25,7 +25,7 @@ public:
 
 	//城市坐标
 	vector<pair<int, int>>city;
-	//城市序列
+	//城市的旅行顺序
 	vector<int>solution;
 
 	//初始化城市，随机生成坐标
@@ -35,10 +35,14 @@ public:
 			sycl::queue{}.submit([&](sycl::handler& h) {
 				sycl::accessor out{ a,h };
 				h.parallel_for(CITY_NUM, [=](sycl::item<1>idx) {
+
+					//利用oneapi的联合分布方法生成随机数
 					oneapi::dpl::minstd_rand engine(777, idx.get_linear_id());
 					oneapi::dpl::uniform_int_distribution<int>distr(0, 100);
+
 					auto res1 = distr(engine);
 					auto res2 = distr(engine);
+
 					out[idx].first = res1;
 					out[idx].second = res2;
 					});
@@ -48,6 +52,8 @@ public:
 			//测试输出
 			//for (int i = 0; i < CITY_NUM; i++)
 			//	cout << result[i].first << ' ' << result[i].second << endl;
+
+			//把并行生成的随机数复制给类的成员变量city
 			this->city = cities;
 	}
 
