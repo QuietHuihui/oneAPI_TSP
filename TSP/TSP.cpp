@@ -67,19 +67,19 @@ public:
 	}
 
 	//评估函数，计算当前解决方案的距离之和
-	int calDistance() {
+	int calDistance(vector<int>solution) {
 
 		sycl::queue q;
 
 		//把solution后移一位得到用来相减的vector
-		vector<int>r_solution(this->solution.begin()+1,this->solution.end());
-		r_solution.push_back(this->solution[0]);
+		vector<int>r_solution(solution.begin()+1,solution.end());
+		r_solution.push_back(solution[0]);
 
 		//存放((x1-x2)^2+(y1-y2)^2)^0.5的vector
 		vector<int>sub_vec(CITY_NUM);
 
 
-		sycl::buffer a_buf(this->solution);
+		sycl::buffer a_buf(solution);
 		sycl::buffer b_buf(r_solution);
 		sycl::buffer city_buf(this->city);
 		sycl::buffer sub_buf(sub_vec);
@@ -112,10 +112,13 @@ public:
 		cout << "当前评估值是: " << result << endl;
 		return result;
 	}
+
+
 };
 int main() {
 	TSP tsp;
 	tsp.initCity();
 	tsp.showCity();
-	tsp.calDistance();
+	vector<int>ivec{0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+	tsp.calDistance(ivec);
 }

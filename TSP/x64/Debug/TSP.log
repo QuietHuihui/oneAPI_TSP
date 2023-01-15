@@ -1,14 +1,14 @@
-﻿TSP.cpp(56,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+﻿TSP.cpp(62,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<C9><FA><B3><C9><CB><E6><BB><FA><B3><C7><CA>械<C4><D7><F8><B1><EA>: " << endl;
                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(106,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(112,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<B5><B1>前<C6><C0><B9><C0>值<CA><C7>: " << result << endl;
                            ^~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~
   2 warnings generated.
-TSP.cpp(56,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(62,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<C9><FA><B3><C9><CB><E6><BB><FA><B3><C7><CA>械<C4><D7><F8><B1><EA>: " << endl;
                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(106,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(112,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<B5><B1>前<C6><C0><B9><C0>值<CA><C7>: " << result << endl;
                            ^~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~
   2 warnings generated.
