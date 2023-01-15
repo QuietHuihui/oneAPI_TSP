@@ -211,14 +211,45 @@ public:
 		q.wait();
 		this->prob_select = prob;
 	}
+
+	//进行选择
+	void select() {
+		//计算累计概率
+		vector<float>addup_prob(N);
+		addup_prob[0] = this->prob_select[0];
+
+		for (int i = 1; i < N; i++) {
+			addup_prob[i] = addup_prob[i - 1] + this->prob_select[i];
+		}
+
+		//记录被选择的个体
+		//轮盘赌选择法，生成0~1之间的随机数，根据累计概率选择个体
+		vector<vector<int>>sel_indiv(N);
+		srand(time(0));
+		for (int i = 0; i < N; i++) {
+			cout << "选择中，第" << i << "/" << N << "个" << endl;
+			//生成0~1之间的随机数,4位小数
+			float random = rand() % (10000) / (float)(10000);
+			for (int j = 0; j < N; j++) {
+				if (random <= addup_prob[j]) {
+					sel_indiv[i] = vector<int>(this->population[j]);
+					break;
+				}
+			}
+		}
+		//把选择出来的种群覆盖掉初始种群
+		for (int i = 0; i < sel_indiv.size(); i++) {
+			this->population[i] = vector<int>(sel_indiv[i]);
+		}			
+	}
 };
 int main() {
 	TSP tsp;
 	tsp.showCity();
 	tsp.showPopulation();
-	//vector<int>ivec{0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
-	//tsp.evaluate(ivec);
 	tsp.cal_eval_sel();
 	tsp.show_eval_sel();
-
+	tsp.select();
+	cout << "选择之后的种群:" << endl;
+	tsp.showPopulation();
 }

@@ -16,7 +16,16 @@ TSP.cpp(109,28): : warning : illegal character encoding in string literal [-Winv
 TSP.cpp(110,10): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                                   << ",<B1><BB>选<D4><F1><B8><C5><C2><CA><CA><C7>" << prob_select[i] << endl;
                                        ^~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  6 warnings generated.
+TSP.cpp(230,15): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+                          cout << "选<D4><F1><D6>校<AC><B5><DA>" << i << "/" << N << "<B8><F6>" << endl;
+                                    ^~~~~~~~~~~~ ~~~~~~~~~~~~
+TSP.cpp(230,46): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+                          cout << "选<D4><F1><D6>校<AC><B5><DA>" << i << "/" << N << "<B8><F6>" << endl;
+                                                                                    ^~~~~~~~
+TSP.cpp(253,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+          cout << "选<D4><F1>之<BA><F3><B5><C4><D6><D6>群:" << endl;
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 warnings generated.
 TSP.cpp(85,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<C9><FA><B3><C9><CB><E6><BB><FA><B3><C7><CA>械<C4><D7><F8><B1><EA>: " << endl;
                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~
@@ -35,5 +44,14 @@ TSP.cpp(109,28): : warning : illegal character encoding in string literal [-Winv
 TSP.cpp(110,10): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                                   << ",<B1><BB>选<D4><F1><B8><C5><C2><CA><CA><C7>" << prob_select[i] << endl;
                                        ^~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  6 warnings generated.
+TSP.cpp(230,15): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+                          cout << "选<D4><F1><D6>校<AC><B5><DA>" << i << "/" << N << "<B8><F6>" << endl;
+                                    ^~~~~~~~~~~~ ~~~~~~~~~~~~
+TSP.cpp(230,46): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+                          cout << "选<D4><F1><D6>校<AC><B5><DA>" << i << "/" << N << "<B8><F6>" << endl;
+                                                                                    ^~~~~~~~
+TSP.cpp(253,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+          cout << "选<D4><F1>之<BA><F3><B5><C4><D6><D6>群:" << endl;
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 warnings generated.
 icx-cl: : message : Note that use of '/Z7' without any optimization-level option will turn off most compiler optimizations similar to use of '/Od'; use '-Rno-debug-disables-optimization' to disable this remark [-Rdebug-disables-optimization]
