@@ -21,8 +21,14 @@ class TSP {
 public:
 
 	TSP() {
+		//初始化城市坐标
+		initCity();
+		//初始化种群
+		initPopulation();
+		//初始化最优结果
+		this->best = INT_MAX;
 		//初始化解决方案：到达各个城市的顺序
-		this->solution = vector<int>{0,1,2,4,3,5,6,7,8,9,10,11,12,13,14};
+		this->solution = vector<int>{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
 	}
 
 	//城市坐标
@@ -31,8 +37,17 @@ public:
 	//城市的旅行顺序,最终的解决方案
 	vector<int>solution;
 
+	//最佳结果
+	int best;
+
 	//种群
 	vector<vector<int>>population;
+
+	//每个个体的评估值
+	vector<float>eval;
+
+	//每个个体被选择的概率
+	vector<float>prob_select;
 
 
 	//初始化城市，随机生成坐标
@@ -107,8 +122,8 @@ public:
 		}
 	}
 
-	//评估函数，计算当前解决方案的距离之和
-	int calDistance(vector<int>solution) {
+	//评估函数，计算当前解决方案的距离之和的倒数(遗传算法倾向于选择最大值)
+	float evaluate(vector<int>solution) {
 
 		sycl::queue q;
 
@@ -150,18 +165,17 @@ public:
 		int result = 0;
 		for (int i = 0; i < CITY_NUM; i++)
 			result += sub_vec[i];
-		cout << "当前评估值是: " << result << endl;
-		return result;
+		cout << "当前评估值是: " << 1.0 / (float)result << endl;
+		return 1.0/(float)result;
 	}
 
 
 };
 int main() {
 	TSP tsp;
-	tsp.initCity();
 	tsp.showCity();
-	vector<int>ivec{0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
-	tsp.calDistance(ivec);
-	tsp.initPopulation();
 	tsp.showPopulation();
+	vector<int>ivec{0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+	tsp.evaluate(ivec);
+
 }
