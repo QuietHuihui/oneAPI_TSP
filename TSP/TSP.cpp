@@ -4,14 +4,16 @@
 #include <string>
 #include<vector>
 #include<cmath>
+#include<ctime>
+#include<unordered_map>
 #include<CL/sycl.hpp>
 #include<oneapi/dpl/random>
 using namespace std;
-#define GROUP_NUM 100    //种群规模
+#define N 100    //种群规模
 #define CITY_NUM 15     //城市数量
-#define ITERATION_NUM 1000   //最大迭代次数
-#define Pc 0.9      //交叉率
-#define Pm 0.1     //变异率
+#define GMAX 1000   //最大迭代次数
+#define PC 0.9      //交叉率
+#define PM 0.1     //变异率
 
 std::int64_t city_num = 15;
 
@@ -25,8 +27,13 @@ public:
 
 	//城市坐标
 	vector<pair<int, int>>city;
-	//城市的旅行顺序
+
+	//城市的旅行顺序,最终的解决方案
 	vector<int>solution;
+
+	//种群
+	vector<vector<int>>population;
+
 
 	//初始化城市，随机生成坐标
 	void initCity() {
@@ -38,6 +45,7 @@ public:
 
 					//利用oneapi的联合分布方法生成随机数
 					oneapi::dpl::minstd_rand engine(777, idx.get_linear_id());
+					//范围在0到100之间
 					oneapi::dpl::uniform_int_distribution<int>distr(0, 100);
 
 					auto res1 = distr(engine);
@@ -64,6 +72,39 @@ public:
 			cout << i<<' ' << '(' << city[i].first << ',' << city[i].second << ')' << endl;
 		}
 
+	}
+
+	//展示种群
+	void showPopulation() {
+		for (int i = 0; i < N; i++) {
+			cout << "第" << i << "个个体" <<' ';
+			cout << "[";
+			for (int j = 0; j < CITY_NUM; j++) {
+				if(j==CITY_NUM-1)cout << population[i][j] << ']';
+				else cout << population[i][j] << ',';
+			}
+			cout << endl;
+		}
+	}
+
+	//初始化种群，随机产生一些旅行顺序
+	void initPopulation() {
+		this->population = vector<vector<int>>(N);
+		srand(time(0));
+		for (int i = 0; i < N; i++) {
+			
+			//使用哈希表，以确保生成的序列中城市不重复
+			unordered_map<int, int>mp;
+			for (int j = 0; j < CITY_NUM; j++) {
+				int num = rand() % CITY_NUM;
+				//如果随机生成的数字有重复，就重新生成直到生成不重复的数字
+				while (mp[num] != 0) {
+					num = rand() % CITY_NUM;
+				}
+				mp[num]++;
+				population[i].push_back(num);
+			}
+		}
 	}
 
 	//评估函数，计算当前解决方案的距离之和
@@ -121,4 +162,6 @@ int main() {
 	tsp.showCity();
 	vector<int>ivec{0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
 	tsp.calDistance(ivec);
+	tsp.initPopulation();
+	tsp.showPopulation();
 }
