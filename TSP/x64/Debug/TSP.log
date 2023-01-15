@@ -1,21 +1,15 @@
-﻿TSP.cpp(53,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+﻿TSP.cpp(56,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<C9><FA><B3><C9><CB><E6><BB><FA><B3><C7><CA>械<C4><D7><F8><B1><EA>: " << endl;
                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(114,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
-                  cout << "<BC><C6><CB><E3>执<D0>谐晒<A6>" << endl;
-                           ^~~~~~~~~~~~~~~~~~~~  ~~~~
-TSP.cpp(70,7): : warning : unused variable 'result' [-Wunused-variable]
-                  int result;
-                      ^
-  3 warnings generated.
-TSP.cpp(53,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(106,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+                  cout << "<B5><B1>前<C6><C0><B9><C0>值<CA><C7>: " << result << endl;
+                           ^~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~
+  2 warnings generated.
+TSP.cpp(56,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<C9><FA><B3><C9><CB><E6><BB><FA><B3><C7><CA>械<C4><D7><F8><B1><EA>: " << endl;
                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(114,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
-                  cout << "<BC><C6><CB><E3>执<D0>谐晒<A6>" << endl;
-                           ^~~~~~~~~~~~~~~~~~~~  ~~~~
-TSP.cpp(70,7): : warning : unused variable 'result' [-Wunused-variable]
-                  int result;
-                      ^
-  3 warnings generated.
+TSP.cpp(106,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+                  cout << "<B5><B1>前<C6><C0><B9><C0>值<CA><C7>: " << result << endl;
+                           ^~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~
+  2 warnings generated.
 icx-cl: : message : Note that use of '/Z7' without any optimization-level option will turn off most compiler optimizations similar to use of '/Od'; use '-Rno-debug-disables-optimization' to disable this remark [-Rdebug-disables-optimization]
