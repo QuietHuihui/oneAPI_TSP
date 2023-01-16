@@ -5,13 +5,14 @@
 #include<vector>
 #include<cmath>
 #include<ctime>
+#include<algorithm>
 #include<unordered_map>
 #include<CL/sycl.hpp>
 #include<oneapi/dpl/random>
 using namespace std;
 #define N 100    //种群规模
 #define CITY_NUM 15     //城市数量
-#define GMAX 1000   //最大迭代次数
+#define GMAX 5   //最大迭代次数
 #define PC 0.9      //交叉率
 #define PM 0.1     //变异率
 
@@ -26,7 +27,7 @@ public:
 		//初始化种群
 		initPopulation();
 		//初始化最优结果
-		this->best = INT_MAX;
+		this->best = 0.0;
 		//初始化解决方案：到达各个城市的顺序
 		this->solution = vector<int>{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
 	}
@@ -38,7 +39,7 @@ public:
 	vector<int>solution;
 
 	//最佳结果
-	int best;
+	float best;
 
 	//种群
 	vector<vector<int>>population;
@@ -52,6 +53,7 @@ public:
 
 	//初始化城市，随机生成坐标
 	void initCity() {
+			cout << "开始初始化城市 。" << endl;
 			vector<pair<int, int>>cities(CITY_NUM);
 			sycl::buffer<pair<int, int>>a{ cities };
 			sycl::queue{}.submit([&](sycl::handler& h) {
@@ -59,12 +61,14 @@ public:
 				h.parallel_for(CITY_NUM, [=](sycl::item<1>idx) {
 
 					//利用oneapi的联合分布方法生成随机数
-					oneapi::dpl::minstd_rand engine(777, idx.get_linear_id());
+					oneapi::dpl::minstd_rand engine_1(777, idx.get_linear_id());
+					oneapi::dpl::minstd_rand engine_2(888, idx.get_linear_id());
 					//范围在0到100之间
-					oneapi::dpl::uniform_int_distribution<int>distr(0, 100);
+					oneapi::dpl::uniform_int_distribution<int>distr_1(0, 100);
+					oneapi::dpl::uniform_int_distribution<int>distr_2(0, 100);
 
-					auto res1 = distr(engine);
-					auto res2 = distr(engine);
+					auto res1 = distr_1(engine_1);
+					auto res2 = distr_2(engine_2);
 
 					out[idx].first = res1;
 					out[idx].second = res2;
@@ -78,6 +82,7 @@ public:
 
 			//把并行生成的随机数复制给类的成员变量city
 			this->city = cities;
+			cout << "初始化城市成功。" << endl;
 	}
 
 	//展示随机生成的城市坐标
@@ -113,6 +118,7 @@ public:
 
 	//初始化种群，随机产生一些旅行顺序
 	void initPopulation() {
+		cout << "开始初始化种群。" << endl;
 		this->population = vector<vector<int>>(N);
 		srand(time(0));
 		for (int i = 0; i < N; i++) {
@@ -129,6 +135,7 @@ public:
 				population[i].push_back(num);
 			}
 		}
+		cout << "初始化种群成功。" << endl;
 	}
 
 	//评估函数，计算当前解决方案的距离之和的倒数(遗传算法倾向于选择最大值)
@@ -180,6 +187,8 @@ public:
 
 	//计算每个个体的评估值和选择概率,并保存
 	void cal_eval_sel() {
+		cout << "开始评估种群。" << endl;
+		eval.clear();
 		//把每个个体的评估值添加到eval中
 		for (int i = 0; i < N; i++) {
 			eval.push_back(evaluate(population[i]));
@@ -210,10 +219,12 @@ public:
 		}
 		q.wait();
 		this->prob_select = prob;
+		cout << "评价种群成功。" << endl;
 	}
 
 	//进行选择
 	void select() {
+		cout << "开始进行选择。" << endl;
 		//计算累计概率
 		vector<float>addup_prob(N);
 		addup_prob[0] = this->prob_select[0];
@@ -227,7 +238,10 @@ public:
 		vector<vector<int>>sel_indiv(N);
 		srand(time(0));
 		for (int i = 0; i < N; i++) {
-			cout << "选择中，第" << i << "/" << N << "个" << endl;
+			
+			//测试用的输出
+			//cout << "选择中，第" << i << "/" << N << "个" << endl;
+
 			//生成0~1之间的随机数,4位小数
 			float random = rand() % (10000) / (float)(10000);
 			for (int j = 0; j < N; j++) {
@@ -240,16 +254,153 @@ public:
 		//把选择出来的种群覆盖掉初始种群
 		for (int i = 0; i < sel_indiv.size(); i++) {
 			this->population[i] = vector<int>(sel_indiv[i]);
-		}			
+		}	
+		cout << "选择成功。" << endl;
+	}
+
+	//进行交叉
+	void cross() {
+		cout << "开始交叉。" << endl;
+		srand(time(0));
+
+		for (int i = 0; i + 1 < N; i++) {
+			//生成0~1之间的三位随机小数，如果小于交配概率就进行交配
+			float random = rand() % (1000) / (float)(1000);
+			if (random < PC) {
+				//使用两点交叉，交叉点为中间点
+				int point = CITY_NUM / 2;
+				vector<int>a = vector<int>(population[i]);
+				vector<int>b = vector<int>(population[i + 1]);
+				//第i个个体的右半边和第i+1个个体的左半边交换
+				for (int i = 0; i <= point; i++) {
+					int temp = a[point + i];
+					a[point + i] = b[i];
+					b[i] = temp;
+				}
+				//去除掉重复元素
+				unordered_map<int, int>mp_a;
+				unordered_map<int, int>mp_b;
+				//去除a中的重复元素
+
+				//先把a交叉点前的所有元素添加到unordered map里面
+				//同时把b交叉点后的所有元素添加到unordered map里面
+				for (int i = 0; i < point; i++) {
+					mp_a[a[i]]++;
+					mp_b[b[point + i + 1]]++;
+				}
+
+				//替换掉a交叉点后的重复元素
+				for (int i = 0; i <= point; i++) {
+					//如果发现a的交叉点后有重复的元素
+					if (mp_a[a[point + i]] != 0) {
+						for (int j = 0; j < CITY_NUM; j++) {
+							if (mp_a[j] == 0) {
+								mp_a[j]++;
+								a[point + i] = j;
+							}
+						}
+					}
+					//如果发现b的交叉点前有重复的元素
+					if (mp_b[b[i]] != 0) {
+						for (int j = 0; j < CITY_NUM; j++) {
+							if (mp_b[j] == 0) {
+								mp_b[j]++;
+								b[i] = j;
+							}
+						}
+					}
+				}
+				//把交配完的个体保存到种群里
+				population[i] = vector<int>(a);
+				population[i + 1] = vector<int>(b);
+			}
+		}
+		cout << "交叉成功。" << endl;
+	}
+
+	//进行变异
+	void mutate() {
+		cout << "开始变异。" << endl;
+		//对于每个个体的每个基因随机生成0~1之间的随机数，如果小于PM，
+		//那就随机地交换这一个基因和另一个基因
+		srand(time(0));
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < CITY_NUM; j++) {
+				float random = rand() % (10000) / (float)(10000);
+				if (random < PM) {
+					int index = rand() % (CITY_NUM-1);
+					int temp = population[i][j];
+					population[i][j] = population[i][index];
+					population[i][index] = temp;
+				}
+			}
+		}
+		cout << "变异成功。" << endl;
+
+	}
+
+	//重新计算评估值并更新最优方案
+	void get_eval() {
+		cout << "开始更新评估值和最优解。" << endl;
+		eval.clear();
+		//把每个个体的评估值添加到eval中
+
+		for (int i = 0; i < N; i++) {
+			eval.push_back(evaluate(population[i]));
+			if (eval[i] > best) {
+				this->best = eval[i];
+				this->solution = population[i];
+			}
+		}
+
+		cout << "更新评估值和最优解成功。" << endl;
+	}
+
+	//输出最优解
+	void show_best() {
+		cout << "最优解为:" << endl;
+
+		//打印最优路线
+		cout << "[";
+		for (int i = 0; i < CITY_NUM; i++) {
+			if (i == CITY_NUM - 1) {
+				cout << solution[i] << ']'<<endl;
+			}
+			else {
+				cout << solution[i] << ',';
+			}
+		}
+
+		//打印最优路线的适应值
+		cout << "适应值:" << endl;
+		cout << best << endl;
+
+		//打印最小花费
+		cout << "路线代价为:" << endl;
+		cout << (1.0) / best << endl;
+
+	}
+
+	//运行算法
+	void run() {
+		//展示初始化的城市
+		showCity();
+		//开始运行
+		for (int i = 0; i < GMAX; i++) {
+			cout << "正在运行第" << i << '/' << GMAX-1 << "代。" << endl;
+			cal_eval_sel();
+			select();
+			cross();
+			mutate();
+			get_eval();
+			cout<<"第" << i << '/' << GMAX-1 << "代的最优解为:" << endl;
+			show_best();
+		}
+		cout << "全局最优解为:" << endl;
+		show_best();
 	}
 };
 int main() {
 	TSP tsp;
-	tsp.showCity();
-	tsp.showPopulation();
-	tsp.cal_eval_sel();
-	tsp.show_eval_sel();
-	tsp.select();
-	cout << "选择之后的种群:" << endl;
-	tsp.showPopulation();
+	tsp.run();
 }
