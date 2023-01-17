@@ -340,17 +340,26 @@ public:
 	void get_eval() {
 		cout << "开始更新评估值和最优解。" << endl;
 		eval.clear();
+
+		float cur_best = 0.0;
+		vector<int>cur_sol(CITY_NUM);
 		//把每个个体的评估值添加到eval中
 
 		for (int i = 0; i < N; i++) {
 			eval.push_back(evaluate(population[i]));
-			if (eval[i] > best) {
-				this->best = eval[i];
-				this->solution = population[i];
+			if (eval[i] > cur_best) {
+				cur_best = eval[i];
+				cur_sol = population[i];
 			}
 		}
-
+		if (cur_best > this->best) {
+			this->best = cur_best;
+			this->solution = cur_sol;
+		}
 		cout << "更新评估值和最优解成功。" << endl;
+
+		//输出一次迭代的最小花费
+		cout << "本轮得到的最小花费是" << (1.0)/cur_best << "。" << endl;
 	}
 
 	//输出最优解
