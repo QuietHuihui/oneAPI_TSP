@@ -11,12 +11,10 @@
 #include<oneapi/dpl/random>
 using namespace std;
 #define N 100    //种群规模
-#define CITY_NUM 15     //城市数量
-#define GMAX 5   //最大迭代次数
+#define CITY_NUM 10     //城市数量
+#define GMAX 20   //最大迭代次数
 #define PC 0.9      //交叉率
 #define PM 0.1     //变异率
-
-std::int64_t city_num = 15;
 
 class TSP {
 public:
@@ -29,7 +27,7 @@ public:
 		//初始化最优结果
 		this->best = 0.0;
 		//初始化解决方案：到达各个城市的顺序
-		this->solution = vector<int>{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+		this->solution = vector<int>(CITY_NUM);
 	}
 
 	//城市坐标
@@ -272,7 +270,7 @@ public:
 				vector<int>a = vector<int>(population[i]);
 				vector<int>b = vector<int>(population[i + 1]);
 				//第i个个体的右半边和第i+1个个体的左半边交换
-				for (int i = 0; i <= point; i++) {
+				for (int i = 0; i <= point && (point + i < CITY_NUM); i++) {
 					int temp = a[point + i];
 					a[point + i] = b[i];
 					b[i] = temp;
@@ -280,32 +278,28 @@ public:
 				//去除掉重复元素
 				unordered_map<int, int>mp_a;
 				unordered_map<int, int>mp_b;
-				//去除a中的重复元素
 
-				//先把a交叉点前的所有元素添加到unordered map里面
-				//同时把b交叉点后的所有元素添加到unordered map里面
-				for (int i = 0; i < point; i++) {
-					mp_a[a[i]]++;
-					mp_b[b[CITY_NUM - (point)+i]]++;
-				}
+				//去除重复元素
 
-				//替换掉a交叉点后的重复元素
-				for (int i = 0; i <= point; i++) {
-					//如果发现a的交叉点后有重复的元素
-					if (mp_a[a[point + i]] != 0) {
+				for (int i = 0; i < CITY_NUM; i++) {
+					if (mp_a[a[i]] == 0)mp_a[a[i]]++;
+					else if (mp_a[a[i]] != 0) {
 						for (int j = 0; j < CITY_NUM; j++) {
 							if (mp_a[j] == 0) {
 								mp_a[j]++;
-								a[point + i] = j;
+								a[i] = j;
+								break;
 							}
 						}
 					}
-					//如果发现b的交叉点前有重复的元素
-					if (mp_b[b[i]] != 0) {
+
+					if (mp_b[b[i]] == 0)mp_b[b[i]]++;
+					else if (mp_b[b[i]] != 0) {
 						for (int j = 0; j < CITY_NUM; j++) {
 							if (mp_b[j] == 0) {
 								mp_b[j]++;
 								b[i] = j;
+								break;
 							}
 						}
 					}
