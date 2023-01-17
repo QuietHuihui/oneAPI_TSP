@@ -286,7 +286,7 @@ public:
 				//同时把b交叉点后的所有元素添加到unordered map里面
 				for (int i = 0; i < point; i++) {
 					mp_a[a[i]]++;
-					mp_b[b[point + i + 1]]++;
+					mp_b[b[CITY_NUM - (point)+i]]++;
 				}
 
 				//替换掉a交叉点后的重复元素
@@ -316,6 +316,9 @@ public:
 			}
 		}
 		cout << "交叉成功。" << endl;
+
+		//cout << "交叉之后的种群:" << endl;
+		//showPopulation();
 	}
 
 	//进行变异
