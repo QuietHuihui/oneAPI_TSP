@@ -13,7 +13,7 @@
 using namespace std;
 #define N 100    //种群规模
 #define CITY_NUM 10     //城市数量
-#define GMAX 20   //最大迭代次数
+#define GMAX 200   //最大迭代次数
 #define PC 0.9      //交叉率
 #define PM 0.1     //变异率
 
@@ -250,8 +250,8 @@ public:
 			//生成0~1之间的三位随机小数，如果小于交配概率就进行交配
 			float random = rand() % (1000) / (float)(1000);
 			if (random < PC) {
-				//使用单点交叉，交叉点为中间点
-				int point = CITY_NUM / 2;
+				//使用单点交叉，交叉点为随机一个点
+				int point = rand() % (CITY_NUM);
 				vector<int>a = vector<int>(population[i]);
 				vector<int>b = vector<int>(population[i + 1]);
 				//第i个个体的右半边和第i+1个个体的左半边交换
@@ -269,24 +269,22 @@ public:
 				for (int i = 0; i < CITY_NUM; i++) {
 					if (mp_a[a[i]] == 0)mp_a[a[i]]++;
 					else if (mp_a[a[i]] != 0) {
-						for (int j = 0; j < CITY_NUM; j++) {
-							if (mp_a[j] == 0) {
-								mp_a[j]++;
-								a[i] = j;
-								break;
-							}
+						int num = rand() % CITY_NUM;
+						while (mp_a[num] != 0) {
+							num = rand() % CITY_NUM;
 						}
+						a[i] = num;
+						mp_a[num]++;
 					}
 
 					if (mp_b[b[i]] == 0)mp_b[b[i]]++;
 					else if (mp_b[b[i]] != 0) {
-						for (int j = 0; j < CITY_NUM; j++) {
-							if (mp_b[j] == 0) {
-								mp_b[j]++;
-								b[i] = j;
-								break;
-							}
+						int num = rand() % CITY_NUM;
+						while (mp_b[num] != 0) {
+							num = rand() % CITY_NUM;
 						}
+						b[i] = num;
+						mp_b[num]++;
 					}
 				}
 				//把交配完的个体保存到种群里
