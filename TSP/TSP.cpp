@@ -9,6 +9,7 @@
 #include<unordered_map>
 #include<CL/sycl.hpp>
 #include<oneapi/dpl/random>
+#include<omp.h>
 using namespace std;
 #define N 100    //种群规模
 #define CITY_NUM 10     //城市数量
@@ -28,6 +29,7 @@ public:
 		this->best = 0.0;
 		//初始化解决方案：到达各个城市的顺序
 		this->solution = vector<int>(CITY_NUM);
+		this->eval = vector<float>(N);
 	}
 
 	//城市坐标
@@ -137,62 +139,49 @@ public:
 	}
 
 	//评估函数，计算当前解决方案的距离之和的倒数(遗传算法倾向于选择最大值)
-	float evaluate(vector<int>solution) {
+	void evaluate() {
 
-		sycl::queue q;
+		//把population展平，存放到临时vector中
+		vector<int>pop_flat(N * CITY_NUM);
 
-		//把solution后移一位得到用来相减的vector
-		vector<int>r_solution(solution.begin()+1,solution.end());
-		r_solution.push_back(solution[0]);
+		int idx = 0;
+#pragma omp parallel for collapse(2)
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < CITY_NUM; j++)
+				pop_flat[idx++]= population[i][j];
 
-		//存放((x1-x2)^2+(y1-y2)^2)^0.5的vector
-		vector<int>sub_vec(CITY_NUM);
+		sycl::buffer<int, 1>pop_buf(pop_flat.data(), N * CITY_NUM);
+		sycl::buffer<float, 1>eval_buf(this->eval.data(), N);
+		sycl::buffer<pair<int, int>>city_buf(this->city);
 
+		sycl::queue{}.submit([&](sycl::handler& h) {
+			auto pop_acc = pop_buf.get_access<sycl::access::mode::read>(h);
+			auto eval_acc = eval_buf.get_access<sycl::access::mode::write>(h);
+			auto city_acc = city_buf.get_access<sycl::access::mode::read>(h);
 
-		sycl::buffer a_buf(solution);
-		sycl::buffer b_buf(r_solution);
-		sycl::buffer city_buf(this->city);
-		sycl::buffer sub_buf(sub_vec);
-
-		//并行地计算距离之和
-		for (size_t i = 0; i < CITY_NUM; i++) {
-			q.submit([&](sycl::handler& h) {
-				sycl::accessor a(a_buf, h, sycl::read_only);
-				sycl::accessor b(b_buf, h, sycl::read_only);
-				sycl::accessor cty(city_buf, h, sycl::read_only);
-				sycl::accessor sub(sub_buf, h, sycl::write_only, sycl::no_init);
-
-				h.parallel_for(CITY_NUM, [=](auto i) {
-					sub[i] = pow(pow(cty[a[i]].first - cty[b[i]].first, 2) + pow(cty[a[i]].second - cty[b[i]].second, 2), 0.5);
-					});
-
+			h.parallel_for(sycl::range<1>{N}, [=](sycl::id<1>index) {
+				int idx = index;
+				auto sum = 0.0;
+				for (int i = index * CITY_NUM + 1; i < (index + 1) * CITY_NUM; i++) {
+					sum += pow(pow(city_acc[pop_acc[i - 1]].first - city_acc[pop_acc[i]].first, 2) + pow(city_acc[pop_acc[i - 1]].second - city_acc[pop_acc[i]].second, 2), 0.5);
+				}
+					
+				sum += pow(pow(city_acc[pop_acc[index * CITY_NUM]].first - city_acc[pop_acc[(index + 1) * CITY_NUM - 1]].first, 2) + pow(city_acc[pop_acc[index * CITY_NUM]].second - city_acc[pop_acc[(index + 1) * CITY_NUM - 1]].second, 2), 0.5);
+				eval_acc[idx] = 1.0 / sum;
 				});
-		};
-		q.wait();
-
-		//输出查看每一个点之间的距离
-		//cout << "计算执行成功" << endl;
-		//for (int i = 0; i < CITY_NUM; i++)
-		//	cout << sub_vec[i] << endl;
-
-		//把并行计算得到的每一个点的距离加起来，得到当前solution的评估值
-		int result = 0;
-		for (int i = 0; i < CITY_NUM; i++)
-			result += sub_vec[i];
-		/*cout << "当前评估值是: " << 1.0 / (float)result << endl;*/
-		return 1.0/(float)result;
+			});
 	}
 
 	//计算每个个体的评估值和选择概率,并保存
 	void cal_eval_sel() {
 		cout << "开始评估种群。" << endl;
 		eval.clear();
+		eval = vector<float>(N);
 		//把每个个体的评估值添加到eval中
-		for (int i = 0; i < N; i++) {
-			eval.push_back(evaluate(population[i]));
-		}
+		evaluate();
 		//计算每个个体的适应概率: 个体适应度/总适应度
 		float total = 0.0;
+		#pragma omp parallel for
 		for (int i = 0; i < N; i++)
 			total += eval[i];
 
@@ -203,19 +192,15 @@ public:
 		sycl::buffer total_buf(total_vec);
 		sycl::buffer prob_buf(prob);
 
-		sycl::queue q;
-		for (size_t i = 0; i < N; i++) {
-			q.submit([&](sycl::handler& h) {
-				sycl::accessor eval_acc(eval_buf, h, sycl::read_only);
-				sycl::accessor total_acc(total_buf, h, sycl::read_only);
-				sycl::accessor prob_acc(prob_buf, h, sycl::write_only, sycl::no_init);
-
-				h.parallel_for(N, [=](auto i) {
-					prob_acc[i] = eval_acc[i] / total_acc[i];
-					});
+		sycl::queue{}.submit([&](sycl::handler& h) {
+			sycl::accessor eval_acc(eval_buf, h, sycl::read_only);
+			sycl::accessor total_acc(total_buf, h, sycl::read_only);
+			sycl::accessor prob_acc(prob_buf, h, sycl::write_only, sycl::no_init);
+			h.parallel_for(N, [=](sycl::item<1>idx) {
+				prob_acc[idx] = eval_acc[idx] / total_acc[idx];
 				});
-		}
-		q.wait();
+			});
+		sycl::host_accessor result{prob_buf};
 		this->prob_select = prob;
 		cout << "评价种群成功。" << endl;
 	}
@@ -265,7 +250,7 @@ public:
 			//生成0~1之间的三位随机小数，如果小于交配概率就进行交配
 			float random = rand() % (1000) / (float)(1000);
 			if (random < PC) {
-				//使用两点交叉，交叉点为中间点
+				//使用单点交叉，交叉点为中间点
 				int point = CITY_NUM / 2;
 				vector<int>a = vector<int>(population[i]);
 				vector<int>b = vector<int>(population[i + 1]);
@@ -340,13 +325,15 @@ public:
 	void get_eval() {
 		cout << "开始更新评估值和最优解。" << endl;
 		eval.clear();
+		eval.clear();
+		eval = vector<float>(N);
+		evaluate();
 
 		float cur_best = 0.0;
 		vector<int>cur_sol(CITY_NUM);
 		//把每个个体的评估值添加到eval中
 
 		for (int i = 0; i < N; i++) {
-			eval.push_back(evaluate(population[i]));
 			if (eval[i] > cur_best) {
 				cur_best = eval[i];
 				cur_sol = population[i];
