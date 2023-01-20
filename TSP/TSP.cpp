@@ -92,11 +92,8 @@ public:
 					out[idx].second = res2;
 					});
 				});
-			//不知为何要加上这一行才能够成功地赋值
+			//加上这一行才能够成功地赋值
 			sycl::host_accessor result{ a };
-			//测试输出
-			//for (int i = 0; i < CITY_NUM; i++)
-			//	cout << result[i].first << ' ' << result[i].second << endl;
 
 			//把并行生成的随机数复制给类的成员变量city
 			this->city = cities;
@@ -174,11 +171,14 @@ public:
 		vector<int>pop_flat(N * CITY_NUM);
 
 		int idx = 0;
+
+		//把种群中的每一个基因赋值给展平的population中
 #pragma omp parallel for collapse(2)
 		for (int i = 0; i < N; i++)
 			for (int j = 0; j < CITY_NUM; j++)
 				pop_flat[idx++]= population[i][j];
 
+		//并行地计算出种群中每一个个体的评估值
 		sycl::buffer<int, 1>pop_buf(pop_flat.data(), N * CITY_NUM);
 		sycl::buffer<float, 1>eval_buf(this->eval.data(), N);
 		sycl::buffer<pair<int, int>>city_buf(this->city);
@@ -250,10 +250,6 @@ public:
 		vector<vector<int>>sel_indiv(N);
 		srand(time(0));
 		for (int i = 0; i < N; i++) {
-			
-			//测试用的输出
-			//cout << "选择中，第" << i << "/" << N << "个" << endl;
-
 			//生成0~1之间的随机数,4位小数
 			float random = rand() % (10000) / (float)(10000);
 			for (int j = 0; j < N; j++) {
@@ -323,8 +319,6 @@ public:
 		}
 		cout << "交叉成功。" << endl;
 
-		//cout << "交叉之后的种群:" << endl;
-		//showPopulation();
 	}
 
 	//进行变异
@@ -403,12 +397,6 @@ public:
 
 	}
 
-	//保存每一代的运行结果
-	//void save_result() {
-	//	ofstream ofs("result.csv", ios_base::app|ios::out);
-	//	ofs>>
-	//}
-
 	//运行算法
 	void run() {
 		//展示初始化的城市
@@ -432,6 +420,8 @@ public:
 		long long end = clock();
 		//算法执行的时间，单位是毫秒
 		int duration = (end - start) * 1000 / CLOCKS_PER_SEC;
+
+		//输出持续时间，最小花费以及最佳路径到文件
 		ofs << endl;
 		ofs << "duration(ms)"<< endl<<duration<<endl;
 		ofs << endl;
