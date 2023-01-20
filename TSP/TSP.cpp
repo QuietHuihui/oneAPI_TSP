@@ -10,9 +10,10 @@
 #include<CL/sycl.hpp>
 #include<oneapi/dpl/random>
 #include<omp.h>
+#include<fstream>
 using namespace std;
 #define N 100    //种群规模
-#define CITY_NUM 10     //城市数量
+#define CITY_NUM 50     //城市数量
 #define GMAX 200   //最大迭代次数
 #define PC 0.9      //交叉率
 #define PM 0.1     //变异率
@@ -21,6 +22,17 @@ class TSP {
 public:
 
 	TSP() {
+		//获取当前时间以作为文件名
+		time_t nowtime = time(NULL);
+		struct tm* p;
+		p = gmtime(&nowtime);
+		char tmp[64];
+		sprintf(tmp, "output-%d-%d-%d-%d-%d-%d.csv", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec);
+		string _filename = tmp;
+		this->filename = _filename;
+
+		//创建文件输出流
+		this->ofs.open(filename, ios::out | ios::app);
 		//初始化城市坐标
 		initCity();
 		//初始化种群
@@ -30,6 +42,8 @@ public:
 		//初始化解决方案：到达各个城市的顺序
 		this->solution = vector<int>(CITY_NUM);
 		this->eval = vector<float>(N);
+
+
 	}
 
 	//城市坐标
@@ -50,7 +64,11 @@ public:
 	//每个个体被选择的概率
 	vector<float>prob_select;
 
+	//输出文件流
+	ofstream ofs;
 
+	//输出文件名
+	string filename;
 	//初始化城市，随机生成坐标
 	void initCity() {
 			cout << "开始初始化城市 。" << endl;
@@ -83,6 +101,17 @@ public:
 			//把并行生成的随机数复制给类的成员变量city
 			this->city = cities;
 			cout << "初始化城市成功。" << endl;
+
+
+
+			//保存生成的城市以及基本信息到文件
+			ofs << "N,CITY_NUM,GMAX,PC,PM" << endl;
+			ofs << N << ',' << CITY_NUM << ',' << GMAX << ',' << PC << ',' << PM << endl;
+			ofs << "x,y" << endl;
+			for (int i = 0; i < CITY_NUM; i++) {
+				ofs << city[i].first << ',' << city[i].second << endl;
+			}
+			ofs << "cost" << endl;
 	}
 
 	//展示随机生成的城市坐标
@@ -345,6 +374,8 @@ public:
 
 		//输出一次迭代的最小花费
 		cout << "本轮得到的最小花费是" << (1.0)/cur_best << "。" << endl;
+
+		ofs << (1.0) / cur_best << ','<<endl;
 	}
 
 	//输出最优解
@@ -372,11 +403,21 @@ public:
 
 	}
 
+	//保存每一代的运行结果
+	//void save_result() {
+	//	ofstream ofs("result.csv", ios_base::app|ios::out);
+	//	ofs>>
+	//}
+
 	//运行算法
 	void run() {
 		//展示初始化的城市
 		showCity();
 		//开始运行
+		
+		//获取开始时间
+		long long start = clock();
+
 		for (int i = 0; i < GMAX; i++) {
 			cout << "正在运行第" << i << '/' << GMAX-1 << "代。" << endl;
 			cal_eval_sel();
@@ -387,6 +428,20 @@ public:
 			cout<<"第" << i << '/' << GMAX-1 << "代的最优解为:" << endl;
 			show_best();
 		}
+		//获取结束时间
+		long long end = clock();
+		//算法执行的时间，单位是毫秒
+		int duration = (end - start) * 1000 / CLOCKS_PER_SEC;
+		ofs << endl;
+		ofs << "duration(ms)"<< endl<<duration<<endl;
+		ofs << endl;
+		ofs << "min cost" << endl;
+		ofs <<(1.0)/ best << endl<<endl;
+		ofs << "solution" << endl;
+		for (int i = 0; i < CITY_NUM; i++) {
+			ofs << solution[i] << endl;
+		}
+		ofs.close();
 		cout << "全局最优解为:" << endl;
 		show_best();
 	}
