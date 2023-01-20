@@ -13,31 +13,31 @@
 TSP.cpp(74,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<BF><AA>始<B3><F5>始<BB><AF><B3><C7><CA><D0> <A1><A3>" << endl;
                                    ^~~~~~~~ ~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~
-TSP.cpp(103,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(100,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<B3><F5>始<BB><AF><B3><C7><CA>谐晒<A6><A1><A3>" << endl;
                                    ^~~~~~~~ ~~~~~~~~~~~~~~~~~~~~  ~~~~~~~~~~~~
-TSP.cpp(119,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(116,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<C9><FA><B3><C9><CB><E6><BB><FA><B3><C7><CA>械<C4><D7><F8><B1><EA>: " << endl;
                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(129,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(126,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<B5><DA>" << i << "<B8><F6><B8><F6><CC><E5>" <<' ';
                                    ^~~~~~~~
-TSP.cpp(129,26): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(126,26): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<B5><DA>" << i << "<B8><F6><B8><F6><CC><E5>" <<' ';
                                                       ^~~~~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(143,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(140,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<B8><F6><CC><E5>" << i << "<B5><C4><C6><C0><B9><C0>值<CA><C7>" << eval[i]
                                    ^~~~~~~~~~~~~~~~
-TSP.cpp(143,28): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(140,28): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<B8><F6><CC><E5>" << i << "<B5><C4><C6><C0><B9><C0>值<CA><C7>" << eval[i]
                                                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(144,10): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(141,10): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                                   << ",<B1><BB>选<D4><F1><B8><C5><C2><CA><CA><C7>" << prob_select[i] << endl;
                                        ^~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(150,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(147,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<BF><AA>始<B3><F5>始<BB><AF><D6><D6>群<A1><A3>" << endl;
                            ^~~~~~~~ ~~~~~~~~ ~~~~~~~~~~~~~~~~ ~~~~~~~~
-TSP.cpp(167,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(164,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<B3><F5>始<BB><AF><D6><D6>群<B3>晒<A6><A1><A3>" << endl;
                            ^~~~~~~~ ~~~~~~~~~~~~~~~~ ~~~~ ~~~~~~~~~~~~
 TSP.cpp(206,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
@@ -58,7 +58,7 @@ TSP.cpp(275,12): : warning : illegal character encoding in string literal [-Winv
 TSP.cpp(324,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<BD><BB><B2><E6><B3>晒<A6><A1><A3>" << endl;
                            ^~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~
-TSP.cpp(332,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(330,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<BF><AA>始<B1><E4><D2>臁? << endl;
                            ^~~~~~~~ ~~~~~~~~~~~~
 TSP.cpp(347,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
@@ -67,37 +67,37 @@ TSP.cpp(347,12): : warning : illegal character encoding in string literal [-Winv
 TSP.cpp(353,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<BF><AA>始<B8><FC><D0><C2><C6><C0><B9><C0>值<BA><CD><D7><EE><D3>沤狻? << endl;
                            ^~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(373,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(374,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<B8><FC><D0><C2><C6><C0><B9><C0>值<BA><CD><D7><EE><D3>沤<E2><B3>晒<A6><A1><A3>" << endl;
                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~ ~~~~~~~~~~~~
-TSP.cpp(376,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(377,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<B1><BE><C2>值玫<BD><B5><C4><D7><EE>小<BB><A8><B7><D1><CA><C7>" << (1.0)/cur_best << "<A1><A3>" << endl;
                            ^~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(376,56): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(377,56): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<B1><BE><C2>值玫<BD><B5><C4><D7><EE>小<BB><A8><B7><D1><CA><C7>" << (1.0)/cur_best << "<A1><A3>" << endl;
                                                                                                              ^~~~~~~~
-TSP.cpp(383,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(384,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<D7><EE><D3>沤<E2>为:" << endl;
                            ^~~~~~~~~~~~ ~~~~
-TSP.cpp(397,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(398,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<CA><CA>应值:" << endl;
                            ^~~~~~~~
-TSP.cpp(401,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(402,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "路<CF>叽<FA><BC><DB>为:" << endl;
                             ^~~~ ~~~~~~~~~~~~
-TSP.cpp(422,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(417,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<D5><FD><D4><DA><D4><CB><D0>械<DA>" << i << '/' << GMAX-1 << "<B4><FA><A1><A3>" << endl;
                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~
-TSP.cpp(422,51): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(417,51): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<D5><FD><D4><DA><D4><CB><D0>械<DA>" << i << '/' << GMAX-1 << "<B4><FA><A1><A3>" << endl;
                                                                                                 ^~~~~~~~~~~~~~~~
-TSP.cpp(428,11): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(423,11): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout<<"<B5><DA>" << i << '/' << GMAX-1 << "<B4><FA><B5><C4><D7><EE><D3>沤<E2>为:" << endl;
                                  ^~~~~~~~
-TSP.cpp(428,41): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(423,41): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout<<"<B5><DA>" << i << '/' << GMAX-1 << "<B4><FA><B5><C4><D7><EE><D3>沤<E2>为:" << endl;
                                                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~
-TSP.cpp(445,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(442,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "全<BE><D6><D7><EE><D3>沤<E2>为:" << endl;
                             ^~~~~~~~~~~~~~~~~~~~ ~~~~
   31 warnings generated.
@@ -116,31 +116,31 @@ TSP.cpp(28,7): : warning : 'gmtime' is deprecated: This function or variable may
 TSP.cpp(74,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<BF><AA>始<B3><F5>始<BB><AF><B3><C7><CA><D0> <A1><A3>" << endl;
                                    ^~~~~~~~ ~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~
-TSP.cpp(103,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(100,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<B3><F5>始<BB><AF><B3><C7><CA>谐晒<A6><A1><A3>" << endl;
                                    ^~~~~~~~ ~~~~~~~~~~~~~~~~~~~~  ~~~~~~~~~~~~
-TSP.cpp(119,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(116,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<C9><FA><B3><C9><CB><E6><BB><FA><B3><C7><CA>械<C4><D7><F8><B1><EA>: " << endl;
                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(129,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(126,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<B5><DA>" << i << "<B8><F6><B8><F6><CC><E5>" <<' ';
                                    ^~~~~~~~
-TSP.cpp(129,26): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(126,26): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<B5><DA>" << i << "<B8><F6><B8><F6><CC><E5>" <<' ';
                                                       ^~~~~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(143,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(140,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<B8><F6><CC><E5>" << i << "<B5><C4><C6><C0><B9><C0>值<CA><C7>" << eval[i]
                                    ^~~~~~~~~~~~~~~~
-TSP.cpp(143,28): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(140,28): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<B8><F6><CC><E5>" << i << "<B5><C4><C6><C0><B9><C0>值<CA><C7>" << eval[i]
                                                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(144,10): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(141,10): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                                   << ",<B1><BB>选<D4><F1><B8><C5><C2><CA><CA><C7>" << prob_select[i] << endl;
                                        ^~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(150,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(147,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<BF><AA>始<B3><F5>始<BB><AF><D6><D6>群<A1><A3>" << endl;
                            ^~~~~~~~ ~~~~~~~~ ~~~~~~~~~~~~~~~~ ~~~~~~~~
-TSP.cpp(167,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(164,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<B3><F5>始<BB><AF><D6><D6>群<B3>晒<A6><A1><A3>" << endl;
                            ^~~~~~~~ ~~~~~~~~~~~~~~~~ ~~~~ ~~~~~~~~~~~~
 TSP.cpp(206,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
@@ -161,7 +161,7 @@ TSP.cpp(275,12): : warning : illegal character encoding in string literal [-Winv
 TSP.cpp(324,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<BD><BB><B2><E6><B3>晒<A6><A1><A3>" << endl;
                            ^~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~
-TSP.cpp(332,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(330,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<BF><AA>始<B1><E4><D2>臁? << endl;
                            ^~~~~~~~ ~~~~~~~~~~~~
 TSP.cpp(347,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
@@ -170,37 +170,37 @@ TSP.cpp(347,12): : warning : illegal character encoding in string literal [-Winv
 TSP.cpp(353,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<BF><AA>始<B8><FC><D0><C2><C6><C0><B9><C0>值<BA><CD><D7><EE><D3>沤狻? << endl;
                            ^~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(373,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(374,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<B8><FC><D0><C2><C6><C0><B9><C0>值<BA><CD><D7><EE><D3>沤<E2><B3>晒<A6><A1><A3>" << endl;
                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~ ~~~~~~~~~~~~
-TSP.cpp(376,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(377,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<B1><BE><C2>值玫<BD><B5><C4><D7><EE>小<BB><A8><B7><D1><CA><C7>" << (1.0)/cur_best << "<A1><A3>" << endl;
                            ^~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~
-TSP.cpp(376,56): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(377,56): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<B1><BE><C2>值玫<BD><B5><C4><D7><EE>小<BB><A8><B7><D1><CA><C7>" << (1.0)/cur_best << "<A1><A3>" << endl;
                                                                                                              ^~~~~~~~
-TSP.cpp(383,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(384,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<D7><EE><D3>沤<E2>为:" << endl;
                            ^~~~~~~~~~~~ ~~~~
-TSP.cpp(397,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(398,12): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "<CA><CA>应值:" << endl;
                            ^~~~~~~~
-TSP.cpp(401,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(402,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "路<CF>叽<FA><BC><DB>为:" << endl;
                             ^~~~ ~~~~~~~~~~~~
-TSP.cpp(422,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(417,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<D5><FD><D4><DA><D4><CB><D0>械<DA>" << i << '/' << GMAX-1 << "<B4><FA><A1><A3>" << endl;
                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~
-TSP.cpp(422,51): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(417,51): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<D5><FD><D4><DA><D4><CB><D0>械<DA>" << i << '/' << GMAX-1 << "<B4><FA><A1><A3>" << endl;
                                                                                                 ^~~~~~~~~~~~~~~~
-TSP.cpp(428,11): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(423,11): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout<<"<B5><DA>" << i << '/' << GMAX-1 << "<B4><FA><B5><C4><D7><EE><D3>沤<E2>为:" << endl;
                                  ^~~~~~~~
-TSP.cpp(428,41): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(423,41): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout<<"<B5><DA>" << i << '/' << GMAX-1 << "<B4><FA><B5><C4><D7><EE><D3>沤<E2>为:" << endl;
                                                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~
-TSP.cpp(445,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(442,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "全<BE><D6><D7><EE><D3>沤<E2>为:" << endl;
                             ^~~~~~~~~~~~~~~~~~~~ ~~~~
   31 warnings generated.

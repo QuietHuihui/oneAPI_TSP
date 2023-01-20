@@ -241,6 +241,7 @@ public:
 		vector<float>addup_prob(N);
 		addup_prob[0] = this->prob_select[0];
 
+#pragma omp parallel for
 		for (int i = 1; i < N; i++) {
 			addup_prob[i] = addup_prob[i - 1] + this->prob_select[i];
 		}
@@ -249,6 +250,8 @@ public:
 		//轮盘赌选择法，生成0~1之间的随机数，根据累计概率选择个体
 		vector<vector<int>>sel_indiv(N);
 		srand(time(0));
+
+#pragma omp parallel for collapse(2)
 		for (int i = 0; i < N; i++) {
 			//生成0~1之间的随机数,4位小数
 			float random = rand() % (10000) / (float)(10000);
@@ -260,6 +263,7 @@ public:
 			}
 		}
 		//把选择出来的种群覆盖掉初始种群
+#pragma omp parallel for
 		for (int i = 0; i < sel_indiv.size(); i++) {
 			this->population[i] = vector<int>(sel_indiv[i]);
 		}	
@@ -327,6 +331,8 @@ public:
 		//对于每个个体的每个基因随机生成0~1之间的随机数，如果小于PM，
 		//那就随机地交换这一个基因和另一个基因
 		srand(time(0));
+
+#pragma omp parallel for collapse(2)
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < CITY_NUM; j++) {
 				float random = rand() % (10000) / (float)(10000);
@@ -354,6 +360,7 @@ public:
 		vector<int>cur_sol(CITY_NUM);
 		//把每个个体的评估值添加到eval中
 
+#pragma omp parallel for
 		for (int i = 0; i < N; i++) {
 			if (eval[i] > cur_best) {
 				cur_best = eval[i];
