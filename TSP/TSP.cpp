@@ -12,9 +12,9 @@
 #include<omp.h>
 #include<fstream>
 using namespace std;
-#define N 100    //种群规模
-#define CITY_NUM 50     //城市数量
-#define GMAX 200   //最大迭代次数
+#define N 20000    //种群规模
+#define CITY_NUM 200     //城市数量
+#define GMAX 2000   //最大迭代次数
 #define PC 0.9      //交叉率
 #define PM 0.1     //变异率
 

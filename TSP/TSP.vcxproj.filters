@@ -15,7 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$projectname$.cpp">
+    <ClCompile Include="TSP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TSP_SEQ.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
