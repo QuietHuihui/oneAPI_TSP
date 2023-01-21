@@ -8,9 +8,9 @@
 #include<unordered_map>
 #include<fstream>
 using namespace std;
-#define N 20000    //种群规模
-#define CITY_NUM 200     //城市数量
-#define GMAX 2000   //最大迭代次数
+#define N 100000    //种群规模
+#define CITY_NUM 300     //城市数量
+#define GMAX 100   //最大迭代次数
 #define PC 0.9      //交叉率
 #define PM 0.1     //变异率
 
