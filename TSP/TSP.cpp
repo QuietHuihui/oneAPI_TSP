@@ -275,186 +275,52 @@ public:
 		cout << "开始交叉。" << endl;
 		srand(time(0));
 
-		//应当先展开再来实现交叉，这里需要修改。循环中使用oneAPI会更慢
-		//把population展平，存放到临时vector中
-		vector<int>pop_flat(N * CITY_NUM);
-		int idx = 0;
-		//把种群中的每一个基因赋值给展平的population中
-#pragma omp parallel for collapse(2)
-		for (int i = 0; i < N; i++)
-			for (int j = 0; j < CITY_NUM; j++)
-				pop_flat[idx++] = population[i][j];
-
-
-		vector<int>a_vec(CITY_NUM, 0);
-		vector<int>b_vec(CITY_NUM, 0);
-		vector<int>am_vec(CITY_NUM, 0);
-		vector<int>bm_vec(CITY_NUM, 0);
-		vector<int>clear_vec(CITY_NUM, 0);
-
-		sycl::buffer<int, 1>a_buf(a_vec.data(), CITY_NUM);
-		sycl::buffer<int, 1>b_buf(b_vec.data(), CITY_NUM);
-		sycl::buffer<int, 1>pop_buf(pop_flat.data(), N * CITY_NUM);
-		sycl::buffer<int, 1>am_buf(am_vec.data(), CITY_NUM);
-		sycl::buffer<int, 1>bm_buf(bm_vec.data(), CITY_NUM);
-		sycl::buffer<int, 1>clear_buf(clear_vec.data(),CITY_NUM);
-
-		sycl::queue q;
-
-		q.submit([&](sycl::handler& h) {
-			auto popu = pop_buf.get_access<sycl::access::mode::read_write>(h);
-			auto a = a_buf.get_access<sycl::access::mode::read_write>(h);
-			auto b = b_buf.get_access<sycl::access::mode::read_write>(h);
-			auto am = am_buf.get_access<sycl::access::mode::read_write>(h);
-			auto bm = bm_buf.get_access<sycl::access::mode::read_write>(h);
-			auto cleaner = clear_buf.get_access<sycl::access::mode::read>(h);
-
-			h.parallel_for(sycl::range<1>{N}, [=](sycl::item<1>index) {
-				// 生成0~1之间的随机小数，如果小于交配概率就进行交配
-				//利用oneapi的联合分布方法生成随机浮点数
-				oneapi::dpl::minstd_rand engine(index * 100, index.get_linear_id());
-				//范围在0到1之间
-				oneapi::dpl::uniform_real_distribution<float>distr(0, 1);
-
+		for (int i = 0; i + 1 < N; i++) {
+			//生成0~1之间的三位随机小数，如果小于交配概率就进行交配
+			float random = rand() % (1000) / (float)(1000);
+			if (random < PC) {
 				//使用单点交叉，交叉点为随机一个点
-				//利用oneapi的联合分布方法生成随机整数
-				oneapi::dpl::minstd_rand iengine(index * 95, index.get_linear_id());
-				//范围在0到1之间
-				oneapi::dpl::uniform_int_distribution<int>cdistr(0, CITY_NUM);
-
-				//判断能否交叉用的随机数
-				auto random = distr(engine);
-
-				if ((random < PC)&&(index+1<N)) {
-					//先把将要交配的两个个体赋值给a向量和b向量
-					//需要处理index+1超出N的问题
-					for (int i = 0; i < CITY_NUM; i++) {
-						a[i] = popu[index*CITY_NUM+i];
-						b[i] = popu[(index * CITY_NUM+1) + i];
-					}
-
-					
-					//进行交叉
-					//随机交叉点位
-					auto point = cdistr(iengine);
-					//第i个个体的右半边和第i+1个个体的左半边交换
-					for (int i = 0; i <= point && (point + i < CITY_NUM); i++) {
-						int temp = a[point + i];
-						a[point + i] = b[i];
-						b[i] = temp;
-					}
-
-					//进行去重
-
-					//首先初始化去重用的向量
-					for (int i = 0; i < CITY_NUM; i++) {
-						am[i] = cleaner[i];
-						bm[i] = cleaner[i];
-					}
-					//判断有无重复元素并进行替换
-					for (int i = 0; i < CITY_NUM; i++) {
-						if (am[a[i]] == 0)am[a[i]]++;
-						else if (am[a[i]] != 0) {
-							for (int j = 0; j < CITY_NUM; j++) {
-								if (am[j] == 0) {
-									a[i] = j;
-									am[j]++;
-									break;
-								}
-							}
-						}
-						if (bm[b[i]] == 0)bm[b[i]]++;
-						else if (bm[b[i]] != 0) {
-							for (int j = 0; j < CITY_NUM; j++) {
-								if (bm[j] == 0) {
-									b[i] = j;
-									bm[j]++;
-									break;
-								}
-							}
-						}
-					}
-
-					//将交叉完成后的个体替换掉种群中原来的个体
-					for (int i = 0; i < CITY_NUM; i++) {
-						popu[index * CITY_NUM + i]=a[i];
-						popu[(index * CITY_NUM + 1) + i]=b[i];
-					}
-
+				int point = rand() % (CITY_NUM);
+				vector<int>a = vector<int>(population[i]);
+				vector<int>b = vector<int>(population[i + 1]);
+				//第i个个体的右半边和第i+1个个体的左半边交换
+				for (int i = 0; i <= point && (point + i < CITY_NUM); i++) {
+					int temp = a[point + i];
+					a[point + i] = b[i];
+					b[i] = temp;
 				}
-				});
+				//去除掉重复元素
+				unordered_map<int, int>mp_a;
+				unordered_map<int, int>mp_b;
 
-			});
-		q.wait();
+				//去除重复元素
 
+				for (int i = 0; i < CITY_NUM; i++) {
+					if (mp_a[a[i]] == 0)mp_a[a[i]]++;
+					else if (mp_a[a[i]] != 0) {
+						int num = rand() % CITY_NUM;
+						while (mp_a[num] != 0) {
+							num = rand() % CITY_NUM;
+						}
+						a[i] = num;
+						mp_a[num]++;
+					}
 
-		//for (int i = 0; i + 1 < N; i++) {
-		//	//生成0~1之间的三位随机小数，如果小于交配概率就进行交配
-		//	float random = rand() % (1000) / (float)(1000);
-		//	if (random < PC) {
-		//		//使用单点交叉，交叉点为随机一个点
-		//		int point = rand() % (CITY_NUM);
-		//		vector<int>a = vector<int>(population[i]);
-		//		vector<int>b = vector<int>(population[i + 1]);
-		//		//第i个个体的右半边和第i+1个个体的左半边交换
-		//		for (int i = 0; i <= point && (point + i < CITY_NUM); i++) {
-		//			int temp = a[point + i];
-		//			a[point + i] = b[i];
-		//			b[i] = temp;
-		//		}
-		//		//去除掉重复元素
-		//		vector<int>avec(CITY_NUM, 0);
-		//		vector<int>bvec(CITY_NUM, 0);
-		//		sycl::buffer am_buf(avec);
-		//		sycl::buffer bm_buf(bvec);
-		//		sycl::buffer a_buf(a);
-		//		sycl::buffer b_buf(b);
-
-		//		sycl::queue{}.submit([&](sycl::handler& h) {
-		//			sycl::accessor am(am_buf, h, sycl::read_write);
-		//			sycl::accessor bm(bm_buf, h, sycl::read_write);
-		//			sycl::accessor _a(a_buf, h, sycl::read_write);
-		//			sycl::accessor _b(b_buf, h, sycl::read_write);
-
-		//			h.parallel_for(CITY_NUM, [=](sycl::item<1>idx) {
-		//				//利用oneapi的联合分布方法生成随机数
-		//				oneapi::dpl::minstd_rand engine_1(idx * 100, idx.get_linear_id());
-		//				//范围在0到100之间
-		//				oneapi::dpl::uniform_int_distribution<int>distr_1(0, CITY_NUM);
-		//				//利用oneapi的联合分布方法生成随机数
-		//				oneapi::dpl::minstd_rand engine_2(idx * 120, idx.get_linear_id());
-		//				//范围在0到CITY_NUM之间
-		//				oneapi::dpl::uniform_int_distribution<int>distr_2(0, CITY_NUM);
-		//				auto rd_1 = distr_1(engine_1);
-		//				auto rd_2 = distr_2(engine_2);
-		//				if (am[_a[idx]] == 0)am[_a[idx]]++;
-		//				else if (am[_a[idx]] != 0) {
-		//					;
-		//					while (am[rd_1] != 0) {
-		//						rd_1 = distr_1(engine_1);
-		//					}
-		//					_a[idx] = rd_1;
-		//					am[rd_1]++;
-		//				}
-		//				if (bm[_b[idx]] == 0)bm[_b[idx]]++;
-		//				else if (bm[_b[idx]] != 0) {
-		//					while (bm[rd_2] != 0) {
-		//						rd_2 = distr_2(engine_2);
-		//					}
-		//					_b[idx] = rd_2;
-		//					bm[rd_2]++;
-		//				}
-		//				});
-		//			});
-
-		//		sycl::host_accessor result{ a_buf };
-		//		sycl::host_accessor _result{ b_buf };
-
-		//		//把交配完的个体保存到种群里
-		//		population[i] = vector<int>(a);
-		//		population[i + 1] = vector<int>(b);
-		/*	}
-		}*/
+					if (mp_b[b[i]] == 0)mp_b[b[i]]++;
+					else if (mp_b[b[i]] != 0) {
+						int num = rand() % CITY_NUM;
+						while (mp_b[num] != 0) {
+							num = rand() % CITY_NUM;
+						}
+						b[i] = num;
+						mp_b[num]++;
+					}
+				}
+				//把交配完的个体保存到种群里
+				population[i] = vector<int>(a);
+				population[i + 1] = vector<int>(b);
+			}
+		}
 		cout << "交叉成功。" << endl;
 
 	}
