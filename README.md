@@ -1,7 +1,7 @@
 
 # 面向TSP的改良GA算法
 
-使用oneAPI和OpenMP将遗传算法进行部分并行改良，提高其解决旅行商问题的效率。
+使用了Intel oneAPI对遗传算法的问题初始化、种群初始化、评估、选择、编译方面进行了并行优化，并且还运用了FPGA进行加速处理，提升了遗传算法解决旅行商问题的效率。
 
 
 
@@ -32,3 +32,12 @@ c(i)。要计算一条路径中的总花费，就是要计算个体DNA中的每�
 将相邻两个个体进行交叉，第一个个体的右部与第二个个体的左部交换，得到两个新的个体。然后分别对这两个个体进行基因去重。
 ## 变异算子
 生成随机数，若小于变异概率则个体可进行变异。变异时生成两个随机数，对应其DNA的两个标，将对应的两个基因进行交换完成一个个体的变异。
+
+## 运行结果
+时间单位均为毫秒ms。
+参数：运行100代，种群数量为145000，城市数量为700，交叉概率为0.9，变异概率为0.1</br>
+![alt text](https://github.com/QuietHuihui/oneAPI_TSP/blob/main/data_img/SEQ.png?raw=true)
+![alt text](https://github.com/QuietHuihui/oneAPI_TSP/blob/main/data_img/PAR.png?raw=true)
+![alt text](https://github.com/QuietHuihui/oneAPI_TSP/blob/main/data_img/Par&Seq.png?raw=true)
+![alt text](https://github.com/QuietHuihui/oneAPI_TSP/blob/main/data_img/SUB.png?raw=true)
+
