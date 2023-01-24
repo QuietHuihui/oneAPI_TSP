@@ -85,22 +85,28 @@ TSP.cpp(398,12): : warning : illegal character encoding in string literal [-Winv
 TSP.cpp(402,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "路<CF>叽<FA><BC><DB>为:" << endl;
                             ^~~~ ~~~~~~~~~~~~
-TSP.cpp(417,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(418,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<D5><FD><D4><DA><D4><CB><D0>械<DA>" << i << '/' << GMAX-1 << "<B4><FA><A1><A3>" << endl;
                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~
-TSP.cpp(417,51): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(418,51): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<D5><FD><D4><DA><D4><CB><D0>械<DA>" << i << '/' << GMAX-1 << "<B4><FA><A1><A3>" << endl;
                                                                                                 ^~~~~~~~~~~~~~~~
-TSP.cpp(423,11): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(424,11): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout<<"<B5><DA>" << i << '/' << GMAX-1 << "<B4><FA><B5><C4><D7><EE><D3>沤<E2>为:" << endl;
                                  ^~~~~~~~
-TSP.cpp(423,41): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(424,41): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout<<"<B5><DA>" << i << '/' << GMAX-1 << "<B4><FA><B5><C4><D7><EE><D3>沤<E2>为:" << endl;
                                                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~
-TSP.cpp(442,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(428,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+                          cout << "<B5><DA>" << i << '/' << GMAX - 1 << "<B4><FA><B5>暮<C4>时为:" << round_duration <<"ms" << endl;
+                                   ^~~~~~~~
+TSP.cpp(428,45): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+                          cout << "<B5><DA>" << i << '/' << GMAX - 1 << "<B4><FA><B5>暮<C4>时为:" << round_duration <<"ms" << endl;
+                                                                         ^~~~~~~~~~~~ ~~~~
+TSP.cpp(447,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "全<BE><D6><D7><EE><D3>沤<E2>为:" << endl;
                             ^~~~~~~~~~~~~~~~~~~~ ~~~~
-  31 warnings generated.
+  33 warnings generated.
 TSP.cpp(28,7): : warning : 'gmtime' is deprecated: This function or variable may be unsafe. Consider using gmtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [-Wdeprecated-declarations]
                   p = gmtime(&nowtime);
                       ^
@@ -188,20 +194,26 @@ TSP.cpp(398,12): : warning : illegal character encoding in string literal [-Winv
 TSP.cpp(402,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "路<CF>叽<FA><BC><DB>为:" << endl;
                             ^~~~ ~~~~~~~~~~~~
-TSP.cpp(417,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(418,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<D5><FD><D4><DA><D4><CB><D0>械<DA>" << i << '/' << GMAX-1 << "<B4><FA><A1><A3>" << endl;
                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~
-TSP.cpp(417,51): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(418,51): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout << "<D5><FD><D4><DA><D4><CB><D0>械<DA>" << i << '/' << GMAX-1 << "<B4><FA><A1><A3>" << endl;
                                                                                                 ^~~~~~~~~~~~~~~~
-TSP.cpp(423,11): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(424,11): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout<<"<B5><DA>" << i << '/' << GMAX-1 << "<B4><FA><B5><C4><D7><EE><D3>沤<E2>为:" << endl;
                                  ^~~~~~~~
-TSP.cpp(423,41): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(424,41): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                           cout<<"<B5><DA>" << i << '/' << GMAX-1 << "<B4><FA><B5><C4><D7><EE><D3>沤<E2>为:" << endl;
                                                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~
-TSP.cpp(442,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+TSP.cpp(428,13): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+                          cout << "<B5><DA>" << i << '/' << GMAX - 1 << "<B4><FA><B5>暮<C4>时为:" << round_duration <<"ms" << endl;
+                                   ^~~~~~~~
+TSP.cpp(428,45): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
+                          cout << "<B5><DA>" << i << '/' << GMAX - 1 << "<B4><FA><B5>暮<C4>时为:" << round_duration <<"ms" << endl;
+                                                                         ^~~~~~~~~~~~ ~~~~
+TSP.cpp(447,14): : warning : illegal character encoding in string literal [-Winvalid-source-encoding]
                   cout << "全<BE><D6><D7><EE><D3>沤<E2>为:" << endl;
                             ^~~~~~~~~~~~~~~~~~~~ ~~~~
-  31 warnings generated.
+  33 warnings generated.
 icx-cl: : message : Note that use of '/Z7' without any optimization-level option will turn off most compiler optimizations similar to use of '/Od'; use '-Rno-debug-disables-optimization' to disable this remark [-Rdebug-disables-optimization]

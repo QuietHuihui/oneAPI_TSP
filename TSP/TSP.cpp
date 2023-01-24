@@ -12,8 +12,8 @@
 #include<omp.h>
 #include<fstream>
 using namespace std;
-#define N 100000    //种群规模
-#define CITY_NUM 300     //城市数量
+#define N 145000    //种群规模
+#define CITY_NUM 700     //城市数量
 #define GMAX 100   //最大迭代次数
 #define PC 0.9      //交叉率
 #define PM 0.1     //变异率
@@ -108,7 +108,7 @@ public:
 			for (int i = 0; i < CITY_NUM; i++) {
 				ofs << city[i].first << ',' << city[i].second << endl;
 			}
-			ofs << "cost" << endl;
+			ofs << "cost,round_duration" << endl;
 	}
 
 	//展示随机生成的城市坐标
@@ -352,7 +352,6 @@ public:
 	void get_eval() {
 		cout << "开始更新评估值和最优解。" << endl;
 		eval.clear();
-		eval.clear();
 		eval = vector<float>(N);
 		evaluate();
 
@@ -376,7 +375,7 @@ public:
 		//输出一次迭代的最小花费
 		cout << "本轮得到的最小花费是" << (1.0)/cur_best << "。" << endl;
 
-		ofs << (1.0) / cur_best << ','<<endl;
+		ofs << (1.0) / cur_best << ',';
 	}
 
 	//输出最优解
@@ -414,6 +413,7 @@ public:
 		long long start = clock();
 
 		for (int i = 0; i < GMAX; i++) {
+			long long round_start = clock();
 			cout << "正在运行第" << i << '/' << GMAX-1 << "代。" << endl;
 			cal_eval_sel();
 			select();
@@ -422,6 +422,10 @@ public:
 			get_eval();
 			cout<<"第" << i << '/' << GMAX-1 << "代的最优解为:" << endl;
 			show_best();
+			long long round_end = clock();
+			int round_duration = (round_end - round_start) * 1000 / CLOCKS_PER_SEC;
+			cout << "第" << i << '/' << GMAX - 1 << "代的耗时为:" << round_duration <<"ms" << endl;
+			ofs << round_duration << ',' << endl;
 		}
 		//获取结束时间
 		long long end = clock();
