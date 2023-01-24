@@ -1,0 +1,14 @@
+C:\Users\86135>scp devcloud:output-2023-1-23-2-24-19.csv  C:\Users\86135\Desktop
+output-2023-1-23-2-24-19.csv                                                            0%    0     0.0KB/s   --:-- ETA
+C:\Users\86135>
+
+C:\Users\86135>scp devcloud:~/output-2023-1-23-2-24-19.csv  C:\Users\86135\Desktop
+output-2023-1-23-2-24-19.csv                                                          100% 8358    25.0KB/s   00:00
+
+C:\Users\86135>scp E:\grade3autumn\高性能计算与云计算\实验\实验4\实验4\TSP\TSP\TSP_SEQ.cpp devcloud:~/
+TSP_SEQ.cpp
+
+[opencl:acc:0] Intel(R) FPGA Emulation Platform for OpenCL(TM), Intel(R) FPGA Emulation Device 1.2 [2022.15.12.0.01_081451]
+[opencl:cpu:1] Intel(R) OpenCL, Intel(R) Xeon(R) Gold 6128 CPU @ 3.40GHz 3.0 [2022.15.12.0.01_081451]
+
+C:\Users\86135>scp E:\grade3autumn\高性能计算与云计算\实验\实验4\实验4\TSP\TSP\TSP.cpp devcloud:~/
