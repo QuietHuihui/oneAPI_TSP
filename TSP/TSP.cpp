@@ -12,17 +12,17 @@
 #include<omp.h>
 #include<fstream>
 using namespace std;
-#define N 1450    //ÖÖÈº¹æÄ£
-#define CITY_NUM 15     //³ÇÊĞÊıÁ¿
-#define GMAX 100   //×î´óµü´ú´ÎÊı
-#define PC 0.9      //½»²æÂÊ
-#define PM 0.1     //±äÒìÂÊ
+#define N 145000    //ç§ç¾¤è§„æ¨¡
+#define CITY_NUM 700     //åŸå¸‚æ•°é‡
+#define GMAX 100   //æœ€å¤§è¿­ä»£æ¬¡æ•°
+#define PC 0.9      //äº¤å‰ç‡
+#define PM 0.1     //å˜å¼‚ç‡
 
 class TSP {
 public:
 
 	TSP() {
-		//»ñÈ¡µ±Ç°Ê±¼äÒÔ×÷ÎªÎÄ¼şÃû
+		//è·å–å½“å‰æ—¶é—´ä»¥ä½œä¸ºæ–‡ä»¶å
 		time_t nowtime = time(NULL);
 		struct tm* p;
 		p = gmtime(&nowtime);
@@ -31,57 +31,57 @@ public:
 		string _filename = tmp;
 		this->filename = _filename;
 
-		//´´½¨ÎÄ¼şÊä³öÁ÷
+		//åˆ›å»ºæ–‡ä»¶è¾“å‡ºæµ
 		this->ofs.open(filename, ios::out | ios::app);
-		//³õÊ¼»¯³ÇÊĞ×ø±ê
+		//åˆå§‹åŒ–åŸå¸‚åæ ‡
 		initCity();
-		//³õÊ¼»¯ÖÖÈº
+		//åˆå§‹åŒ–ç§ç¾¤
 		initPopulation();
-		//³õÊ¼»¯×îÓÅ½á¹û
+		//åˆå§‹åŒ–æœ€ä¼˜ç»“æœ
 		this->best = 0.0;
-		//³õÊ¼»¯½â¾ö·½°¸£ºµ½´ï¸÷¸ö³ÇÊĞµÄË³Ğò
+		//åˆå§‹åŒ–è§£å†³æ–¹æ¡ˆï¼šåˆ°è¾¾å„ä¸ªåŸå¸‚çš„é¡ºåº
 		this->solution = vector<int>(CITY_NUM);
 		this->eval = vector<float>(N);
 
 
 	}
 
-	//³ÇÊĞ×ø±ê
+	//åŸå¸‚åæ ‡
 	vector<pair<int, int>>city;
 
-	//³ÇÊĞµÄÂÃĞĞË³Ğò,×îÖÕµÄ½â¾ö·½°¸
+	//åŸå¸‚çš„æ—…è¡Œé¡ºåº,æœ€ç»ˆçš„è§£å†³æ–¹æ¡ˆ
 	vector<int>solution;
 
-	//×î¼Ñ½á¹û
+	//æœ€ä½³ç»“æœ
 	float best;
 
-	//ÖÖÈº
+	//ç§ç¾¤
 	vector<vector<int>>population;
 
-	//Ã¿¸ö¸öÌåµÄÆÀ¹ÀÖµ
+	//æ¯ä¸ªä¸ªä½“çš„è¯„ä¼°å€¼
 	vector<float>eval;
 
-	//Ã¿¸ö¸öÌå±»Ñ¡ÔñµÄ¸ÅÂÊ
+	//æ¯ä¸ªä¸ªä½“è¢«é€‰æ‹©çš„æ¦‚ç‡
 	vector<float>prob_select;
 
-	//Êä³öÎÄ¼şÁ÷
+	//è¾“å‡ºæ–‡ä»¶æµ
 	ofstream ofs;
 
-	//Êä³öÎÄ¼şÃû
+	//è¾“å‡ºæ–‡ä»¶å
 	string filename;
-	//³õÊ¼»¯³ÇÊĞ£¬Ëæ»úÉú³É×ø±ê
+	//åˆå§‹åŒ–åŸå¸‚ï¼Œéšæœºç”Ÿæˆåæ ‡
 	void initCity() {
-			cout << "¿ªÊ¼³õÊ¼»¯³ÇÊĞ ¡£" << endl;
+			cout << "å¼€å§‹åˆå§‹åŒ–åŸå¸‚ ã€‚" << endl;
 			vector<pair<int, int>>cities(CITY_NUM);
 			sycl::buffer<pair<int, int>>a{ cities };
 			sycl::queue{}.submit([&](sycl::handler& h) {
 				sycl::accessor out{ a,h };
 				h.parallel_for(CITY_NUM, [=](sycl::item<1>idx) {
 
-					//ÀûÓÃoneapiµÄÁªºÏ·Ö²¼·½·¨Éú³ÉËæ»úÊı
+					//åˆ©ç”¨oneapiçš„è”åˆåˆ†å¸ƒæ–¹æ³•ç”Ÿæˆéšæœºæ•°
 					oneapi::dpl::minstd_rand engine_1(777, idx.get_linear_id());
 					oneapi::dpl::minstd_rand engine_2(888, idx.get_linear_id());
-					//·¶Î§ÔÚ0µ½100Ö®¼ä
+					//èŒƒå›´åœ¨0åˆ°100ä¹‹é—´
 					oneapi::dpl::uniform_int_distribution<int>distr_1(0, 100);
 					oneapi::dpl::uniform_int_distribution<int>distr_2(0, 100);
 
@@ -92,16 +92,16 @@ public:
 					out[idx].second = res2;
 					});
 				});
-			//¼ÓÉÏÕâÒ»ĞĞ²ÅÄÜ¹»³É¹¦µØ¸³Öµ
+			//åŠ ä¸Šè¿™ä¸€è¡Œæ‰èƒ½å¤ŸæˆåŠŸåœ°èµ‹å€¼
 			sycl::host_accessor result{ a };
 
-			//°Ñ²¢ĞĞÉú³ÉµÄËæ»úÊı¸´ÖÆ¸øÀàµÄ³ÉÔ±±äÁ¿city
+			//æŠŠå¹¶è¡Œç”Ÿæˆçš„éšæœºæ•°å¤åˆ¶ç»™ç±»çš„æˆå‘˜å˜é‡city
 			this->city = cities;
-			cout << "³õÊ¼»¯³ÇÊĞ³É¹¦¡£" << endl;
+			cout << "åˆå§‹åŒ–åŸå¸‚æˆåŠŸã€‚" << endl;
 
 
 
-			//±£´æÉú³ÉµÄ³ÇÊĞÒÔ¼°»ù±¾ĞÅÏ¢µ½ÎÄ¼ş
+			//ä¿å­˜ç”Ÿæˆçš„åŸå¸‚ä»¥åŠåŸºæœ¬ä¿¡æ¯åˆ°æ–‡ä»¶
 			ofs << "N,CITY_NUM,GMAX,PC,PM" << endl;
 			ofs << N << ',' << CITY_NUM << ',' << GMAX << ',' << PC << ',' << PM << endl;
 			ofs << "x,y" << endl;
@@ -111,19 +111,19 @@ public:
 			ofs << "cost,round_duration" << endl;
 	}
 
-	//Õ¹Ê¾Ëæ»úÉú³ÉµÄ³ÇÊĞ×ø±ê
+	//å±•ç¤ºéšæœºç”Ÿæˆçš„åŸå¸‚åæ ‡
 	void showCity() {
-		cout << "Éú³ÉËæ»ú³ÇÊĞµÄ×ø±ê: " << endl;
+		cout << "ç”ŸæˆéšæœºåŸå¸‚çš„åæ ‡: " << endl;
 		for (int i = 0; i < this->city.size(); i++) {
 			cout << i<<' ' << '(' << city[i].first << ',' << city[i].second << ')' << endl;
 		}
 
 	}
 
-	//Õ¹Ê¾ÖÖÈº
+	//å±•ç¤ºç§ç¾¤
 	void showPopulation() {
 		for (int i = 0; i < N; i++) {
-			cout << "µÚ" << i << "¸ö¸öÌå" <<' ';
+			cout << "ç¬¬" << i << "ä¸ªä¸ªä½“" <<' ';
 			cout << "[";
 			for (int j = 0; j < CITY_NUM; j++) {
 				if(j==CITY_NUM-1)cout << population[i][j] << ']';
@@ -133,27 +133,27 @@ public:
 		}
 	}
 
-	//Õ¹Ê¾ÆÀ¹ÀÖµºÍÑ¡Ôñ¸ÅÂÊ
+	//å±•ç¤ºè¯„ä¼°å€¼å’Œé€‰æ‹©æ¦‚ç‡
 	void show_eval_sel() {
-		//Êä³öËùÓĞÆÀ¹ÀÖµºÍ±»Ñ¡Ôñ¸ÅÂÊ
+		//è¾“å‡ºæ‰€æœ‰è¯„ä¼°å€¼å’Œè¢«é€‰æ‹©æ¦‚ç‡
 		for (int i = 0; i < N; i++) {
-			cout << "¸öÌå" << i << "µÄÆÀ¹ÀÖµÊÇ" << eval[i]
-				<< ",±»Ñ¡Ôñ¸ÅÂÊÊÇ" << prob_select[i] << endl;
+			cout << "ä¸ªä½“" << i << "çš„è¯„ä¼°å€¼æ˜¯" << eval[i]
+				<< ",è¢«é€‰æ‹©æ¦‚ç‡æ˜¯" << prob_select[i] << endl;
 		}
 	}
 
-	//³õÊ¼»¯ÖÖÈº£¬Ëæ»ú²úÉúÒ»Ğ©ÂÃĞĞË³Ğò
+	//åˆå§‹åŒ–ç§ç¾¤ï¼Œéšæœºäº§ç”Ÿä¸€äº›æ—…è¡Œé¡ºåº
 	void initPopulation() {
-		cout << "¿ªÊ¼³õÊ¼»¯ÖÖÈº¡£" << endl;
+		cout << "å¼€å§‹åˆå§‹åŒ–ç§ç¾¤ã€‚" << endl;
 		this->population = vector<vector<int>>(N);
 		srand(time(0));
 		for (int i = 0; i < N; i++) {
 			
-			//Ê¹ÓÃ¹şÏ£±í£¬ÒÔÈ·±£Éú³ÉµÄĞòÁĞÖĞ³ÇÊĞ²»ÖØ¸´
+			//ä½¿ç”¨å“ˆå¸Œè¡¨ï¼Œä»¥ç¡®ä¿ç”Ÿæˆçš„åºåˆ—ä¸­åŸå¸‚ä¸é‡å¤
 			unordered_map<int, int>mp;
 			for (int j = 0; j < CITY_NUM; j++) {
 				int num = rand() % CITY_NUM;
-				//Èç¹ûËæ»úÉú³ÉµÄÊı×ÖÓĞÖØ¸´£¬¾ÍÖØĞÂÉú³ÉÖ±µ½Éú³É²»ÖØ¸´µÄÊı×Ö
+				//å¦‚æœéšæœºç”Ÿæˆçš„æ•°å­—æœ‰é‡å¤ï¼Œå°±é‡æ–°ç”Ÿæˆç›´åˆ°ç”Ÿæˆä¸é‡å¤çš„æ•°å­—
 				while (mp[num] != 0) {
 					num = rand() % CITY_NUM;
 				}
@@ -161,24 +161,24 @@ public:
 				population[i].push_back(num);
 			}
 		}
-		cout << "³õÊ¼»¯ÖÖÈº³É¹¦¡£" << endl;
+		cout << "åˆå§‹åŒ–ç§ç¾¤æˆåŠŸã€‚" << endl;
 	}
 
-	//ÆÀ¹Àº¯Êı£¬¼ÆËãµ±Ç°½â¾ö·½°¸µÄ¾àÀëÖ®ºÍµÄµ¹Êı(ÒÅ´«Ëã·¨ÇãÏòÓÚÑ¡Ôñ×î´óÖµ)
+	//è¯„ä¼°å‡½æ•°ï¼Œè®¡ç®—å½“å‰è§£å†³æ–¹æ¡ˆçš„è·ç¦»ä¹‹å’Œçš„å€’æ•°(é—ä¼ ç®—æ³•å€¾å‘äºé€‰æ‹©æœ€å¤§å€¼)
 	void evaluate() {
 
-		//°ÑpopulationÕ¹Æ½£¬´æ·Åµ½ÁÙÊ±vectorÖĞ
+		//æŠŠpopulationå±•å¹³ï¼Œå­˜æ”¾åˆ°ä¸´æ—¶vectorä¸­
 		vector<int>pop_flat(N * CITY_NUM);
 
 		int idx = 0;
 
-		//°ÑÖÖÈºÖĞµÄÃ¿Ò»¸ö»ùÒò¸³Öµ¸øÕ¹Æ½µÄpopulationÖĞ
+		//æŠŠç§ç¾¤ä¸­çš„æ¯ä¸€ä¸ªåŸºå› èµ‹å€¼ç»™å±•å¹³çš„populationä¸­
 #pragma omp parallel for collapse(2)
 		for (int i = 0; i < N; i++)
 			for (int j = 0; j < CITY_NUM; j++)
 				pop_flat[idx++]= population[i][j];
 
-		//²¢ĞĞµØ¼ÆËã³öÖÖÈºÖĞÃ¿Ò»¸ö¸öÌåµÄÆÀ¹ÀÖµ
+		//å¹¶è¡Œåœ°è®¡ç®—å‡ºç§ç¾¤ä¸­æ¯ä¸€ä¸ªä¸ªä½“çš„è¯„ä¼°å€¼
 		sycl::buffer<int, 1>pop_buf(pop_flat.data(), N * CITY_NUM);
 		sycl::buffer<float, 1>eval_buf(this->eval.data(), N);
 		sycl::buffer<pair<int, int>>city_buf(this->city);
@@ -201,20 +201,20 @@ public:
 			});
 	}
 
-	//¼ÆËãÃ¿¸ö¸öÌåµÄÆÀ¹ÀÖµºÍÑ¡Ôñ¸ÅÂÊ,²¢±£´æ
+	//è®¡ç®—æ¯ä¸ªä¸ªä½“çš„è¯„ä¼°å€¼å’Œé€‰æ‹©æ¦‚ç‡,å¹¶ä¿å­˜
 	void cal_eval_sel() {
-		cout << "¿ªÊ¼ÆÀ¹ÀÖÖÈº¡£" << endl;
+		cout << "å¼€å§‹è¯„ä¼°ç§ç¾¤ã€‚" << endl;
 		eval.clear();
 		eval = vector<float>(N);
-		//°ÑÃ¿¸ö¸öÌåµÄÆÀ¹ÀÖµÌí¼Óµ½evalÖĞ
+		//æŠŠæ¯ä¸ªä¸ªä½“çš„è¯„ä¼°å€¼æ·»åŠ åˆ°evalä¸­
 		evaluate();
-		//¼ÆËãÃ¿¸ö¸öÌåµÄÊÊÓ¦¸ÅÂÊ: ¸öÌåÊÊÓ¦¶È/×ÜÊÊÓ¦¶È
+		//è®¡ç®—æ¯ä¸ªä¸ªä½“çš„é€‚åº”æ¦‚ç‡: ä¸ªä½“é€‚åº”åº¦/æ€»é€‚åº”åº¦
 		float total = 0.0;
 		#pragma omp parallel for
 		for (int i = 0; i < N; i++)
 			total += eval[i];
 
-		//²¢ĞĞµØ¼ÆËãÃ¿¸ö¸öÌåµÄ±»Ñ¡Ôñ¸ÅÂÊ
+		//å¹¶è¡Œåœ°è®¡ç®—æ¯ä¸ªä¸ªä½“çš„è¢«é€‰æ‹©æ¦‚ç‡
 		vector<float>total_vec(N, total);
 		vector<float>prob(N, 0.0);
 		sycl::buffer eval_buf(this->eval);
@@ -231,13 +231,13 @@ public:
 			});
 		sycl::host_accessor result{prob_buf};
 		this->prob_select = prob;
-		cout << "ÆÀ¼ÛÖÖÈº³É¹¦¡£" << endl;
+		cout << "è¯„ä»·ç§ç¾¤æˆåŠŸã€‚" << endl;
 	}
 
-	//½øĞĞÑ¡Ôñ
+	//è¿›è¡Œé€‰æ‹©
 	void select() {
-		cout << "¿ªÊ¼½øĞĞÑ¡Ôñ¡£" << endl;
-		//¼ÆËãÀÛ¼Æ¸ÅÂÊ
+		cout << "å¼€å§‹è¿›è¡Œé€‰æ‹©ã€‚" << endl;
+		//è®¡ç®—ç´¯è®¡æ¦‚ç‡
 		vector<float>addup_prob(N);
 		addup_prob[0] = this->prob_select[0];
 
@@ -246,14 +246,14 @@ public:
 			addup_prob[i] = addup_prob[i - 1] + this->prob_select[i];
 		}
 
-		//¼ÇÂ¼±»Ñ¡ÔñµÄ¸öÌå
-		//ÂÖÅÌ¶ÄÑ¡Ôñ·¨£¬Éú³É0~1Ö®¼äµÄËæ»úÊı£¬¸ù¾İÀÛ¼Æ¸ÅÂÊÑ¡Ôñ¸öÌå
+		//è®°å½•è¢«é€‰æ‹©çš„ä¸ªä½“
+		//è½®ç›˜èµŒé€‰æ‹©æ³•ï¼Œç”Ÿæˆ0~1ä¹‹é—´çš„éšæœºæ•°ï¼Œæ ¹æ®ç´¯è®¡æ¦‚ç‡é€‰æ‹©ä¸ªä½“
 		vector<vector<int>>sel_indiv(N);
 		srand(time(0));
 
 #pragma omp parallel for collapse(2)
 		for (int i = 0; i < N; i++) {
-			//Éú³É0~1Ö®¼äµÄËæ»úÊı,4Î»Ğ¡Êı
+			//ç”Ÿæˆ0~1ä¹‹é—´çš„éšæœºæ•°,4ä½å°æ•°
 			float random = rand() % (10000) / (float)(10000);
 			for (int j = 0; j < N; j++) {
 				if (random <= addup_prob[j]) {
@@ -262,38 +262,38 @@ public:
 				}
 			}
 		}
-		//°ÑÑ¡Ôñ³öÀ´µÄÖÖÈº¸²¸Çµô³õÊ¼ÖÖÈº
+		//æŠŠé€‰æ‹©å‡ºæ¥çš„ç§ç¾¤è¦†ç›–æ‰åˆå§‹ç§ç¾¤
 #pragma omp parallel for
 		for (int i = 0; i < sel_indiv.size(); i++) {
 			this->population[i] = vector<int>(sel_indiv[i]);
 		}	
-		cout << "Ñ¡Ôñ³É¹¦¡£" << endl;
+		cout << "é€‰æ‹©æˆåŠŸã€‚" << endl;
 	}
 
-	//½øĞĞ½»²æ
+	//è¿›è¡Œäº¤å‰
 	void cross() {
-		cout << "¿ªÊ¼½»²æ¡£" << endl;
+		cout << "å¼€å§‹äº¤å‰ã€‚" << endl;
 		srand(time(0));
 
 		for (int i = 0; i + 1 < N; i++) {
-			//Éú³É0~1Ö®¼äµÄÈıÎ»Ëæ»úĞ¡Êı£¬Èç¹ûĞ¡ÓÚ½»Åä¸ÅÂÊ¾Í½øĞĞ½»Åä
+			//ç”Ÿæˆ0~1ä¹‹é—´çš„ä¸‰ä½éšæœºå°æ•°ï¼Œå¦‚æœå°äºäº¤é…æ¦‚ç‡å°±è¿›è¡Œäº¤é…
 			float random = rand() % (1000) / (float)(1000);
 			if (random < PC) {
-				//Ê¹ÓÃµ¥µã½»²æ£¬½»²æµãÎªËæ»úÒ»¸öµã
+				//ä½¿ç”¨å•ç‚¹äº¤å‰ï¼Œäº¤å‰ç‚¹ä¸ºéšæœºä¸€ä¸ªç‚¹
 				int point = rand() % (CITY_NUM);
 				vector<int>a = vector<int>(population[i]);
 				vector<int>b = vector<int>(population[i + 1]);
-				//µÚi¸ö¸öÌåµÄÓÒ°ë±ßºÍµÚi+1¸ö¸öÌåµÄ×ó°ë±ß½»»»
+				//ç¬¬iä¸ªä¸ªä½“çš„å³åŠè¾¹å’Œç¬¬i+1ä¸ªä¸ªä½“çš„å·¦åŠè¾¹äº¤æ¢
 				for (int i = 0; i <= point && (point + i < CITY_NUM); i++) {
 					int temp = a[point + i];
 					a[point + i] = b[i];
 					b[i] = temp;
 				}
-				//È¥³ıµôÖØ¸´ÔªËØ
+				//å»é™¤æ‰é‡å¤å…ƒç´ 
 				unordered_map<int, int>mp_a;
 				unordered_map<int, int>mp_b;
 
-				//È¥³ıÖØ¸´ÔªËØ
+				//å»é™¤é‡å¤å…ƒç´ 
 
 				for (int i = 0; i < CITY_NUM; i++) {
 					if (mp_a[a[i]] == 0)mp_a[a[i]]++;
@@ -316,20 +316,20 @@ public:
 						mp_b[num]++;
 					}
 				}
-				//°Ñ½»ÅäÍêµÄ¸öÌå±£´æµ½ÖÖÈºÀï
+				//æŠŠäº¤é…å®Œçš„ä¸ªä½“ä¿å­˜åˆ°ç§ç¾¤é‡Œ
 				population[i] = vector<int>(a);
 				population[i + 1] = vector<int>(b);
 			}
 		}
-		cout << "½»²æ³É¹¦¡£" << endl;
+		cout << "äº¤å‰æˆåŠŸã€‚" << endl;
 
 	}
 
-	//½øĞĞ±äÒì
+	//è¿›è¡Œå˜å¼‚
 	void mutate() {
-		cout << "¿ªÊ¼±äÒì¡£" << endl;
-		//¶ÔÓÚÃ¿¸ö¸öÌåµÄÃ¿¸ö»ùÒòËæ»úÉú³É0~1Ö®¼äµÄËæ»úÊı£¬Èç¹ûĞ¡ÓÚPM£¬
-		//ÄÇ¾ÍËæ»úµØ½»»»ÕâÒ»¸ö»ùÒòºÍÁíÒ»¸ö»ùÒò
+		cout << "å¼€å§‹å˜å¼‚ã€‚" << endl;
+		//å¯¹äºæ¯ä¸ªä¸ªä½“çš„æ¯ä¸ªåŸºå› éšæœºç”Ÿæˆ0~1ä¹‹é—´çš„éšæœºæ•°ï¼Œå¦‚æœå°äºPMï¼Œ
+		//é‚£å°±éšæœºåœ°äº¤æ¢è¿™ä¸€ä¸ªåŸºå› å’Œå¦ä¸€ä¸ªåŸºå› 
 		srand(time(0));
 
 #pragma omp parallel for collapse(2)
@@ -344,20 +344,20 @@ public:
 				}
 			}
 		}
-		cout << "±äÒì³É¹¦¡£" << endl;
+		cout << "å˜å¼‚æˆåŠŸã€‚" << endl;
 
 	}
 
-	//ÖØĞÂ¼ÆËãÆÀ¹ÀÖµ²¢¸üĞÂ×îÓÅ·½°¸
+	//é‡æ–°è®¡ç®—è¯„ä¼°å€¼å¹¶æ›´æ–°æœ€ä¼˜æ–¹æ¡ˆ
 	void get_eval() {
-		cout << "¿ªÊ¼¸üĞÂÆÀ¹ÀÖµºÍ×îÓÅ½â¡£" << endl;
+		cout << "å¼€å§‹æ›´æ–°è¯„ä¼°å€¼å’Œæœ€ä¼˜è§£ã€‚" << endl;
 		eval.clear();
 		eval = vector<float>(N);
 		evaluate();
 
 		float cur_best = 0.0;
 		vector<int>cur_sol(CITY_NUM);
-		//°ÑÃ¿¸ö¸öÌåµÄÆÀ¹ÀÖµÌí¼Óµ½evalÖĞ
+		//æŠŠæ¯ä¸ªä¸ªä½“çš„è¯„ä¼°å€¼æ·»åŠ åˆ°evalä¸­
 
 #pragma omp parallel for
 		for (int i = 0; i < N; i++) {
@@ -370,19 +370,19 @@ public:
 			this->best = cur_best;
 			this->solution = cur_sol;
 		}
-		cout << "¸üĞÂÆÀ¹ÀÖµºÍ×îÓÅ½â³É¹¦¡£" << endl;
+		cout << "æ›´æ–°è¯„ä¼°å€¼å’Œæœ€ä¼˜è§£æˆåŠŸã€‚" << endl;
 
-		//Êä³öÒ»´Îµü´úµÄ×îĞ¡»¨·Ñ
-		cout << "±¾ÂÖµÃµ½µÄ×îĞ¡»¨·ÑÊÇ" << (1.0)/cur_best << "¡£" << endl;
+		//è¾“å‡ºä¸€æ¬¡è¿­ä»£çš„æœ€å°èŠ±è´¹
+		cout << "æœ¬è½®å¾—åˆ°çš„æœ€å°èŠ±è´¹æ˜¯" << (1.0)/cur_best << "ã€‚" << endl;
 
 		ofs << (1.0) / cur_best << ',';
 	}
 
-	//Êä³ö×îÓÅ½â
+	//è¾“å‡ºæœ€ä¼˜è§£
 	void show_best() {
-		cout << "×îÓÅ½âÎª:" << endl;
+		cout << "æœ€ä¼˜è§£ä¸º:" << endl;
 
-		//´òÓ¡×îÓÅÂ·Ïß
+		//æ‰“å°æœ€ä¼˜è·¯çº¿
 		cout << "[";
 		for (int i = 0; i < CITY_NUM; i++) {
 			if (i == CITY_NUM - 1) {
@@ -393,46 +393,46 @@ public:
 			}
 		}
 
-		//´òÓ¡×îÓÅÂ·ÏßµÄÊÊÓ¦Öµ
-		cout << "ÊÊÓ¦Öµ:" << endl;
+		//æ‰“å°æœ€ä¼˜è·¯çº¿çš„é€‚åº”å€¼
+		cout << "é€‚åº”å€¼:" << endl;
 		cout << best << endl;
 
-		//´òÓ¡×îĞ¡»¨·Ñ
-		cout << "Â·Ïß´ú¼ÛÎª:" << endl;
+		//æ‰“å°æœ€å°èŠ±è´¹
+		cout << "è·¯çº¿ä»£ä»·ä¸º:" << endl;
 		cout << (1.0) / best << endl;
 
 	}
 
-	//ÔËĞĞËã·¨
+	//è¿è¡Œç®—æ³•
 	void run() {
-		//Õ¹Ê¾³õÊ¼»¯µÄ³ÇÊĞ
+		//å±•ç¤ºåˆå§‹åŒ–çš„åŸå¸‚
 		showCity();
-		//¿ªÊ¼ÔËĞĞ
+		//å¼€å§‹è¿è¡Œ
 		
-		//»ñÈ¡¿ªÊ¼Ê±¼ä
+		//è·å–å¼€å§‹æ—¶é—´
 		long long start = clock();
 
 		for (int i = 0; i < GMAX; i++) {
 			long long round_start = clock();
-			cout << "ÕıÔÚÔËĞĞµÚ" << i << '/' << GMAX-1 << "´ú¡£" << endl;
+			cout << "æ­£åœ¨è¿è¡Œç¬¬" << i << '/' << GMAX-1 << "ä»£ã€‚" << endl;
 			cal_eval_sel();
 			select();
 			cross();
 			mutate();
 			get_eval();
-			cout<<"µÚ" << i << '/' << GMAX-1 << "´úµÄ×îÓÅ½âÎª:" << endl;
+			cout<<"ç¬¬" << i << '/' << GMAX-1 << "ä»£çš„æœ€ä¼˜è§£ä¸º:" << endl;
 			show_best();
 			long long round_end = clock();
 			int round_duration = (round_end - round_start) * 1000 / CLOCKS_PER_SEC;
-			cout << "µÚ" << i << '/' << GMAX - 1 << "´úµÄºÄÊ±Îª:" << round_duration <<"ms" << endl;
+			cout << "ç¬¬" << i << '/' << GMAX - 1 << "ä»£çš„è€—æ—¶ä¸º:" << round_duration <<"ms" << endl;
 			ofs << round_duration << ',' << endl;
 		}
-		//»ñÈ¡½áÊøÊ±¼ä
+		//è·å–ç»“æŸæ—¶é—´
 		long long end = clock();
-		//Ëã·¨Ö´ĞĞµÄÊ±¼ä£¬µ¥Î»ÊÇºÁÃë
+		//ç®—æ³•æ‰§è¡Œçš„æ—¶é—´ï¼Œå•ä½æ˜¯æ¯«ç§’
 		int duration = (end - start) * 1000 / CLOCKS_PER_SEC;
 
-		//Êä³ö³ÖĞøÊ±¼ä£¬×îĞ¡»¨·ÑÒÔ¼°×î¼ÑÂ·¾¶µ½ÎÄ¼ş
+		//è¾“å‡ºæŒç»­æ—¶é—´ï¼Œæœ€å°èŠ±è´¹ä»¥åŠæœ€ä½³è·¯å¾„åˆ°æ–‡ä»¶
 		ofs << endl;
 		ofs << "duration(ms)"<< endl<<duration<<endl;
 		ofs << endl;
@@ -443,7 +443,7 @@ public:
 			ofs << solution[i] << endl;
 		}
 		ofs.close();
-		cout << "È«¾Ö×îÓÅ½âÎª:" << endl;
+		cout << "å…¨å±€æœ€ä¼˜è§£ä¸º:" << endl;
 		show_best();
 	}
 };
