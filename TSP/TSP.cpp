@@ -11,6 +11,7 @@
 #include<oneapi/dpl/random>
 #include<omp.h>
 #include<fstream>
+#include <sys/time.h>      
 using namespace std;
 #define N 145000    //种群规模
 #define CITY_NUM 700     //城市数量
@@ -71,51 +72,51 @@ public:
 	string filename;
 	//初始化城市，随机生成坐标
 	void initCity() {
-			cout << "开始初始化城市 。" << endl;
-			vector<pair<int, int>>cities(CITY_NUM);
-			sycl::buffer<pair<int, int>>a{ cities };
-			sycl::queue{}.submit([&](sycl::handler& h) {
-				sycl::accessor out{ a,h };
-				h.parallel_for(CITY_NUM, [=](sycl::item<1>idx) {
+		cout << "开始初始化城市 。" << endl;
+		vector<pair<int, int>>cities(CITY_NUM);
+		sycl::buffer<pair<int, int>>a{ cities };
+		sycl::queue{}.submit([&](sycl::handler& h) {
+			sycl::accessor out{ a,h };
+			h.parallel_for(CITY_NUM, [=](sycl::item<1>idx) {
 
-					//利用oneapi的联合分布方法生成随机数
-					oneapi::dpl::minstd_rand engine_1(777, idx.get_linear_id());
-					oneapi::dpl::minstd_rand engine_2(888, idx.get_linear_id());
-					//范围在0到100之间
-					oneapi::dpl::uniform_int_distribution<int>distr_1(0, 100);
-					oneapi::dpl::uniform_int_distribution<int>distr_2(0, 100);
+				//利用oneapi的联合分布方法生成随机数
+				oneapi::dpl::minstd_rand engine_1(777, idx.get_linear_id());
+				oneapi::dpl::minstd_rand engine_2(888, idx.get_linear_id());
+				//范围在0到100之间
+				oneapi::dpl::uniform_int_distribution<int>distr_1(0, 100);
+				oneapi::dpl::uniform_int_distribution<int>distr_2(0, 100);
 
-					auto res1 = distr_1(engine_1);
-					auto res2 = distr_2(engine_2);
+				auto res1 = distr_1(engine_1);
+				auto res2 = distr_2(engine_2);
 
-					out[idx].first = res1;
-					out[idx].second = res2;
-					});
+				out[idx].first = res1;
+				out[idx].second = res2;
 				});
-			//加上这一行才能够成功地赋值
-			sycl::host_accessor result{ a };
+			});
+		//加上这一行才能够成功地赋值
+		sycl::host_accessor result{ a };
 
-			//把并行生成的随机数复制给类的成员变量city
-			this->city = cities;
-			cout << "初始化城市成功。" << endl;
+		//把并行生成的随机数复制给类的成员变量city
+		this->city = cities;
+		cout << "初始化城市成功。" << endl;
 
 
 
-			//保存生成的城市以及基本信息到文件
-			ofs << "N,CITY_NUM,GMAX,PC,PM" << endl;
-			ofs << N << ',' << CITY_NUM << ',' << GMAX << ',' << PC << ',' << PM << endl;
-			ofs << "x,y" << endl;
-			for (int i = 0; i < CITY_NUM; i++) {
-				ofs << city[i].first << ',' << city[i].second << endl;
-			}
-			ofs << "cost,round_duration" << endl;
+		//保存生成的城市以及基本信息到文件
+		ofs << "N,CITY_NUM,GMAX,PC,PM" << endl;
+		ofs << N << ',' << CITY_NUM << ',' << GMAX << ',' << PC << ',' << PM << endl;
+		ofs << "x,y" << endl;
+		for (int i = 0; i < CITY_NUM; i++) {
+			ofs << city[i].first << ',' << city[i].second << endl;
+		}
+		ofs << "cost,round_duration" << endl;
 	}
 
 	//展示随机生成的城市坐标
 	void showCity() {
 		cout << "生成随机城市的坐标: " << endl;
 		for (int i = 0; i < this->city.size(); i++) {
-			cout << i<<' ' << '(' << city[i].first << ',' << city[i].second << ')' << endl;
+			cout << i << ' ' << '(' << city[i].first << ',' << city[i].second << ')' << endl;
 		}
 
 	}
@@ -123,10 +124,10 @@ public:
 	//展示种群
 	void showPopulation() {
 		for (int i = 0; i < N; i++) {
-			cout << "第" << i << "个个体" <<' ';
+			cout << "第" << i << "个个体" << ' ';
 			cout << "[";
 			for (int j = 0; j < CITY_NUM; j++) {
-				if(j==CITY_NUM-1)cout << population[i][j] << ']';
+				if (j == CITY_NUM - 1)cout << population[i][j] << ']';
 				else cout << population[i][j] << ',';
 			}
 			cout << endl;
@@ -148,7 +149,7 @@ public:
 		this->population = vector<vector<int>>(N);
 		srand(time(0));
 		for (int i = 0; i < N; i++) {
-			
+
 			//使用哈希表，以确保生成的序列中城市不重复
 			unordered_map<int, int>mp;
 			for (int j = 0; j < CITY_NUM; j++) {
@@ -173,10 +174,9 @@ public:
 		int idx = 0;
 
 		//把种群中的每一个基因赋值给展平的population中
-#pragma omp parallel for collapse(2)
 		for (int i = 0; i < N; i++)
 			for (int j = 0; j < CITY_NUM; j++)
-				pop_flat[idx++]= population[i][j];
+				pop_flat[idx++] = population[i][j];
 
 		//并行地计算出种群中每一个个体的评估值
 		sycl::buffer<int, 1>pop_buf(pop_flat.data(), N * CITY_NUM);
@@ -194,7 +194,7 @@ public:
 				for (int i = index * CITY_NUM + 1; i < (index + 1) * CITY_NUM; i++) {
 					sum += pow(pow(city_acc[pop_acc[i - 1]].first - city_acc[pop_acc[i]].first, 2) + pow(city_acc[pop_acc[i - 1]].second - city_acc[pop_acc[i]].second, 2), 0.5);
 				}
-					
+
 				sum += pow(pow(city_acc[pop_acc[index * CITY_NUM]].first - city_acc[pop_acc[(index + 1) * CITY_NUM - 1]].first, 2) + pow(city_acc[pop_acc[index * CITY_NUM]].second - city_acc[pop_acc[(index + 1) * CITY_NUM - 1]].second, 2), 0.5);
 				eval_acc[idx] = 1.0 / sum;
 				});
@@ -210,9 +210,15 @@ public:
 		evaluate();
 		//计算每个个体的适应概率: 个体适应度/总适应度
 		float total = 0.0;
-		#pragma omp parallel for
-		for (int i = 0; i < N; i++)
-			total += eval[i];
+		int is_cpu = 1;
+#pragma omp target map(to:eval) map(from:total) map(from:is_cpu)
+		{
+			is_cpu = omp_is_initial_device();
+#pragma omp parallel for
+			for (int i = 0; i < N; i++)
+				total += eval[i];
+		}
+		cout << "Running on " << (is_cpu ? "CPU" : "GPU") << "\n";
 
 		//并行地计算每个个体的被选择概率
 		vector<float>total_vec(N, total);
@@ -229,7 +235,7 @@ public:
 				prob_acc[idx] = eval_acc[idx] / total_acc[idx];
 				});
 			});
-		sycl::host_accessor result{prob_buf};
+		sycl::host_accessor result{ prob_buf };
 		this->prob_select = prob;
 		cout << "评价种群成功。" << endl;
 	}
@@ -241,7 +247,6 @@ public:
 		vector<float>addup_prob(N);
 		addup_prob[0] = this->prob_select[0];
 
-#pragma omp parallel for
 		for (int i = 1; i < N; i++) {
 			addup_prob[i] = addup_prob[i - 1] + this->prob_select[i];
 		}
@@ -251,7 +256,7 @@ public:
 		vector<vector<int>>sel_indiv(N);
 		srand(time(0));
 
-#pragma omp parallel for collapse(2)
+#pragma omp parallel for
 		for (int i = 0; i < N; i++) {
 			//生成0~1之间的随机数,4位小数
 			float random = rand() % (10000) / (float)(10000);
@@ -266,7 +271,7 @@ public:
 #pragma omp parallel for
 		for (int i = 0; i < sel_indiv.size(); i++) {
 			this->population[i] = vector<int>(sel_indiv[i]);
-		}	
+		}
 		cout << "选择成功。" << endl;
 	}
 
@@ -337,7 +342,7 @@ public:
 			for (int j = 0; j < CITY_NUM; j++) {
 				float random = rand() % (10000) / (float)(10000);
 				if (random < PM) {
-					int index = rand() % (CITY_NUM-1);
+					int index = rand() % (CITY_NUM - 1);
 					int temp = population[i][j];
 					population[i][j] = population[i][index];
 					population[i][index] = temp;
@@ -358,7 +363,6 @@ public:
 		float cur_best = 0.0;
 		vector<int>cur_sol(CITY_NUM);
 		//把每个个体的评估值添加到eval中
-
 #pragma omp parallel for
 		for (int i = 0; i < N; i++) {
 			if (eval[i] > cur_best) {
@@ -373,7 +377,7 @@ public:
 		cout << "更新评估值和最优解成功。" << endl;
 
 		//输出一次迭代的最小花费
-		cout << "本轮得到的最小花费是" << (1.0)/cur_best << "。" << endl;
+		cout << "本轮得到的最小花费是" << (1.0) / cur_best << "。" << endl;
 
 		ofs << (1.0) / cur_best << ',';
 	}
@@ -386,7 +390,7 @@ public:
 		cout << "[";
 		for (int i = 0; i < CITY_NUM; i++) {
 			if (i == CITY_NUM - 1) {
-				cout << solution[i] << ']'<<endl;
+				cout << solution[i] << ']' << endl;
 			}
 			else {
 				cout << solution[i] << ',';
@@ -408,36 +412,40 @@ public:
 		//展示初始化的城市
 		showCity();
 		//开始运行
-		
+
 		//获取开始时间
-		long long start = clock();
+		struct timeval start;
+		gettimeofday(&start, NULL);
 
 		for (int i = 0; i < GMAX; i++) {
-			long long round_start = clock();
-			cout << "正在运行第" << i << '/' << GMAX-1 << "代。" << endl;
+			struct timeval round_start;
+			gettimeofday(&round_start, NULL);
+			cout << "正在运行第" << i << '/' << GMAX - 1 << "代。" << endl;
 			cal_eval_sel();
 			select();
 			cross();
 			mutate();
 			get_eval();
-			cout<<"第" << i << '/' << GMAX-1 << "代的最优解为:" << endl;
+			cout << "第" << i << '/' << GMAX - 1 << "代的最优解为:" << endl;
 			show_best();
-			long long round_end = clock();
-			int round_duration = (round_end - round_start) * 1000 / CLOCKS_PER_SEC;
-			cout << "第" << i << '/' << GMAX - 1 << "代的耗时为:" << round_duration <<"ms" << endl;
+			struct timeval round_end;
+			gettimeofday(&round_end, NULL);
+			unsigned int round_duration = (round_end.tv_sec * 1000 + round_end.tv_usec / 1000) - (round_start.tv_sec * 1000 + round_start.tv_usec / 1000);
+			cout << "第" << i << '/' << GMAX - 1 << "代的耗时为:" << round_duration << "ms" << endl;
 			ofs << round_duration << ',' << endl;
 		}
 		//获取结束时间
-		long long end = clock();
+		struct timeval end;
+		gettimeofday(&end, NULL);
 		//算法执行的时间，单位是毫秒
-		int duration = (end - start) * 1000 / CLOCKS_PER_SEC;
+		unsigned int duration = (end.tv_sec * 1000 + end.tv_usec / 1000) - (start.tv_sec * 1000 + start.tv_usec / 1000);
 
 		//输出持续时间，最小花费以及最佳路径到文件
 		ofs << endl;
-		ofs << "duration(ms)"<< endl<<duration<<endl;
+		ofs << "duration(ms)" << endl << duration << endl;
 		ofs << endl;
 		ofs << "min cost" << endl;
-		ofs <<(1.0)/ best << endl<<endl;
+		ofs << (1.0) / best << endl << endl;
 		ofs << "solution" << endl;
 		for (int i = 0; i < CITY_NUM; i++) {
 			ofs << solution[i] << endl;
