@@ -1,4 +1,79 @@
-﻿icx-cl: : message : Note that use of '/Z7' without any optimization-level option will turn off most compiler optimizations similar to use of '/Od'; use '-Rno-debug-disables-optimization' to disable this remark [-Rdebug-disables-optimization]
-test-ce2c4b.obj : : error LNK2019: 无法解析的外部符号 omp_get_num_devices，函数 main 中引用了该符号
-E:\\grade3autumn\\高性能计算与云计算\\实验\\实验4\\实验4\\TSP\\x64\\Debug\\TSP.exe : : error LNK1120: 1 个无法解析的外部命令
-icx-cl: : error : linker command failed with exit code 1120 (use -v to see invocation)
+﻿TSP.cpp(28,7): : warning : 'gmtime' is deprecated: This function or variable may be unsafe. Consider using gmtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [-Wdeprecated-declarations]
+                  p = gmtime(&nowtime);
+                      ^
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\time.h(487,24): note: 'gmtime' has been explicitly marked deprecated here
+          _Check_return_ _CRT_INSECURE_DEPRECATE(gmtime_s)
+                         ^
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(320,55): note: expanded from macro '_CRT_INSECURE_DEPRECATE'
+          #define _CRT_INSECURE_DEPRECATE(_Replacement) _CRT_DEPRECATE_TEXT(    \
+                                                        ^
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(310,47): note: expanded from macro '_CRT_DEPRECATE_TEXT'
+  #define _CRT_DEPRECATE_TEXT(_Text) __declspec(deprecated(_Text))
+                                                ^
+  1 warning generated.
+TSP.cpp(28,7): : warning : 'gmtime' is deprecated: This function or variable may be unsafe. Consider using gmtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [-Wdeprecated-declarations]
+                  p = gmtime(&nowtime);
+                      ^
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\time.h(487,24): note: 'gmtime' has been explicitly marked deprecated here
+          _Check_return_ _CRT_INSECURE_DEPRECATE(gmtime_s)
+                         ^
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(320,55): note: expanded from macro '_CRT_INSECURE_DEPRECATE'
+          #define _CRT_INSECURE_DEPRECATE(_Replacement) _CRT_DEPRECATE_TEXT(    \
+                                                        ^
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(310,47): note: expanded from macro '_CRT_DEPRECATE_TEXT'
+  #define _CRT_DEPRECATE_TEXT(_Text) __declspec(deprecated(_Text))
+                                                ^
+  1 warning generated.
+TSP_SEQ.cpp(24,7): : warning : 'gmtime' is deprecated: This function or variable may be unsafe. Consider using gmtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [-Wdeprecated-declarations]
+                  p = gmtime(&nowtime);
+                      ^
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\time.h(487,24): note: 'gmtime' has been explicitly marked deprecated here
+          _Check_return_ _CRT_INSECURE_DEPRECATE(gmtime_s)
+                         ^
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(320,55): note: expanded from macro '_CRT_INSECURE_DEPRECATE'
+          #define _CRT_INSECURE_DEPRECATE(_Replacement) _CRT_DEPRECATE_TEXT(    \
+                                                        ^
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(310,47): note: expanded from macro '_CRT_DEPRECATE_TEXT'
+  #define _CRT_DEPRECATE_TEXT(_Text) __declspec(deprecated(_Text))
+                                                ^
+  1 warning generated.
+TSP_SEQ.cpp(24,7): : warning : 'gmtime' is deprecated: This function or variable may be unsafe. Consider using gmtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [-Wdeprecated-declarations]
+                  p = gmtime(&nowtime);
+                      ^
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\time.h(487,24): note: 'gmtime' has been explicitly marked deprecated here
+          _Check_return_ _CRT_INSECURE_DEPRECATE(gmtime_s)
+                         ^
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(320,55): note: expanded from macro '_CRT_INSECURE_DEPRECATE'
+          #define _CRT_INSECURE_DEPRECATE(_Replacement) _CRT_DEPRECATE_TEXT(    \
+                                                        ^
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(310,47): note: expanded from macro '_CRT_DEPRECATE_TEXT'
+  #define _CRT_DEPRECATE_TEXT(_Text) __declspec(deprecated(_Text))
+                                                ^
+  1 warning generated.
+TSP_small.cpp(28,7): : warning : 'gmtime' is deprecated: This function or variable may be unsafe. Consider using gmtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [-Wdeprecated-declarations]
+                  p = gmtime(&nowtime);
+                      ^
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\time.h(487,24): note: 'gmtime' has been explicitly marked deprecated here
+          _Check_return_ _CRT_INSECURE_DEPRECATE(gmtime_s)
+                         ^
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(320,55): note: expanded from macro '_CRT_INSECURE_DEPRECATE'
+          #define _CRT_INSECURE_DEPRECATE(_Replacement) _CRT_DEPRECATE_TEXT(    \
+                                                        ^
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(310,47): note: expanded from macro '_CRT_DEPRECATE_TEXT'
+  #define _CRT_DEPRECATE_TEXT(_Text) __declspec(deprecated(_Text))
+                                                ^
+  1 warning generated.
+TSP_small.cpp(28,7): : warning : 'gmtime' is deprecated: This function or variable may be unsafe. Consider using gmtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [-Wdeprecated-declarations]
+                  p = gmtime(&nowtime);
+                      ^
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\time.h(487,24): note: 'gmtime' has been explicitly marked deprecated here
+          _Check_return_ _CRT_INSECURE_DEPRECATE(gmtime_s)
+                         ^
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(320,55): note: expanded from macro '_CRT_INSECURE_DEPRECATE'
+          #define _CRT_INSECURE_DEPRECATE(_Replacement) _CRT_DEPRECATE_TEXT(    \
+                                                        ^
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(310,47): note: expanded from macro '_CRT_DEPRECATE_TEXT'
+  #define _CRT_DEPRECATE_TEXT(_Text) __declspec(deprecated(_Text))
+                                                ^
+  1 warning generated.
+icx-cl: : message : Note that use of '/Z7' without any optimization-level option will turn off most compiler optimizations similar to use of '/Od'; use '-Rno-debug-disables-optimization' to disable this remark [-Rdebug-disables-optimization]

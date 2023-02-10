@@ -6,3 +6,8 @@ qsub -I -l nodes=1:gpu:ppn=2 -d .
 
 export OverrideDefaultFP64Settings=1 
 export IGC_EnableDPEmulation=1 
+
+启用oneapi环境并编译
+source /opt/intel/oneapi/setvars.sh
+
+icpx -fsycl -fiopenmp TSP_TEST.cpp -o TSP_TEST
